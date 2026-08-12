@@ -1,0 +1,4 @@
+Command: docker compose ps
+NAME                  IMAGE               SERVICE    STATUS
+evcharging-kafka      apache/kafka:3.9.0 kafka      Up 3 hours (healthy)
+evcharging-postgres   postgres:16-alpine  postgres   Up 9 minutes (healthy)

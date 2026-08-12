@@ -1,0 +1,5 @@
+scenario=repeat
+started_marker=1
+poll_seconds=3
+process_cleanup=PASS
+verdict=PASS

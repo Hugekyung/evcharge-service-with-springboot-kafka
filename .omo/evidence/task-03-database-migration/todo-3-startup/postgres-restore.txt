@@ -1,0 +1,2 @@
+ Container evcharging-postgres  Starting
+ Container evcharging-postgres  Started

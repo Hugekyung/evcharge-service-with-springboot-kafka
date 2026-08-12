@@ -1,0 +1,35 @@
+ check  | value 
+--------+-------
+ tables |     2
+(1 row)
+
+  check  | value 
+---------+-------
+ columns |    21
+(1 row)
+
+       check        | value 
+--------------------+-------
+ unique_constraints |     2
+(1 row)
+
+      check      | value 
+-----------------+-------
+ composite_index |     1
+(1 row)
+
+   check   | value 
+-----------+-------
+ flyway_v1 |     1
+(1 row)
+
+              indexname              
+-------------------------------------
+ charging_event_pkey
+ charging_session_pkey
+ idx_charging_event_session_sequence
+ uk_charging_event_event_id
+ uk_charging_session_session_id
+(5 rows)
+
+DO

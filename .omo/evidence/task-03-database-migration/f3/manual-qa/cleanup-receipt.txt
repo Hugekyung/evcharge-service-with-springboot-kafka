@@ -1,0 +1,4 @@
+drop_exit=0
+named_db=qa_f3_20260813003836_44324
+remaining_qa_processes=0
+volumes_preserved=verified via docker compose ps; no down/rm/volume command run

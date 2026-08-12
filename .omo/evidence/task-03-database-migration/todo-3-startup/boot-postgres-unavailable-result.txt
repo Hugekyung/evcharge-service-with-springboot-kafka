@@ -1,0 +1,2 @@
+unavailable_postgres_exit_code=1 (expected non-zero)
+restored_health=healthy

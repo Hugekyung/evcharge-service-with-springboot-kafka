@@ -1,0 +1,8 @@
+---process check before cleanup---
+49079 88167 /bin/zsh -c E=.omo/evidence/task-03-database-migration/todo-3-review-20260813\012printf '%s\n' '---process check before cleanup---' | tee "$E/cleanup-receipt.txt"\012ps -axo pid,ppid,command | rg 'gradlew bootRun|ChargingApplication' | tee -a "$E/cleanup-receipt.txt" || true\012docker compose exec -T postgres psql -U evcharging -d postgres -v ON_ERROR_STOP=1 <<'SQL' | tee -a "$E/cleanup-receipt.txt"\012DROP DATABASE IF EXISTS evcharging_qa_review;\012SQL\012docker compose ps | tee -a "$E/cleanup-receipt.txt"\012printf '%s\n' 'cleanup=PASS (disposable QA database dropped; no application process; Compose services retained)' | tee -a "$E/cleanup-receipt.txt"\012
+49083 49079 rg gradlew bootRun|ChargingApplication
+DROP DATABASE
+NAME                  IMAGE                COMMAND                  SERVICE    CREATED       STATUS                    PORTS
+evcharging-kafka      apache/kafka:3.9.0   "/__cacert_entrypoin…"   kafka      4 hours ago   Up 3 hours (healthy)      0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+evcharging-postgres   postgres:16-alpine   "docker-entrypoint.s…"   postgres   4 hours ago   Up 12 minutes (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+cleanup=PASS (disposable QA database dropped; no application process; Compose services retained)

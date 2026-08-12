@@ -1,0 +1,69 @@
+--- tables ---
+    table_name    
+------------------
+ charging_event
+ charging_session
+(2 rows)
+
+--- flyway history ---
+ installed_rank | version |      description       | success 
+----------------+---------+------------------------+---------
+              1 | 1       | create charging tables | t
+(1 row)
+
+ v1_count 
+----------
+        1
+(1 row)
+
+--- constraints ---
+    table_name    |        constraint_name         | constraint_type 
+------------------+--------------------------------+-----------------
+ charging_event   | uk_charging_event_event_id     | UNIQUE
+ charging_session | uk_charging_session_session_id | UNIQUE
+(2 rows)
+
+--- indexes ---
+    tablename     |              indexname              |                                                   indexdef                                                   
+------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------
+ charging_event   | charging_event_pkey                 | CREATE UNIQUE INDEX charging_event_pkey ON public.charging_event USING btree (id)
+ charging_event   | idx_charging_event_session_sequence | CREATE INDEX idx_charging_event_session_sequence ON public.charging_event USING btree (session_id, sequence)
+ charging_event   | uk_charging_event_event_id          | CREATE UNIQUE INDEX uk_charging_event_event_id ON public.charging_event USING btree (event_id)
+ charging_session | charging_session_pkey               | CREATE UNIQUE INDEX charging_session_pkey ON public.charging_session USING btree (id)
+ charging_session | uk_charging_session_session_id      | CREATE UNIQUE INDEX uk_charging_session_session_id ON public.charging_session USING btree (session_id)
+(5 rows)
+
+--- columns ---
+    table_name    |  column_name  |        data_type         | is_nullable 
+------------------+---------------+--------------------------+-------------
+ charging_event   | id            | bigint                   | NO
+ charging_event   | event_id      | character varying        | NO
+ charging_event   | session_id    | character varying        | NO
+ charging_event   | charger_id    | character varying        | NO
+ charging_event   | event_type    | character varying        | NO
+ charging_event   | sequence      | bigint                   | NO
+ charging_event   | battery_level | integer                  | YES
+ charging_event   | charged_kwh   | numeric                  | YES
+ charging_event   | occurred_at   | timestamp with time zone | NO
+ charging_event   | processed_at  | timestamp with time zone | NO
+ charging_session | id            | bigint                   | NO
+ charging_session | session_id    | character varying        | NO
+ charging_session | charger_id    | character varying        | NO
+ charging_session | status        | character varying        | NO
+ charging_session | battery_level | integer                  | YES
+ charging_session | charged_kwh   | numeric                  | YES
+ charging_session | last_sequence | bigint                   | NO
+ charging_session | started_at    | timestamp with time zone | YES
+ charging_session | completed_at  | timestamp with time zone | YES
+ charging_session | created_at    | timestamp with time zone | NO
+ charging_session | updated_at    | timestamp with time zone | NO
+(21 rows)
+
+--- named volume state ---
+evcharging_postgres-data|/var/lib/docker/volumes/evcharging_postgres-data/_data
+evcharging_kafka-data|/var/lib/docker/volumes/evcharging_kafka-data/_data
+--- final app process check ---
+44433 /bin/zsh -c F3=.omo/evidence/task-03-database-migration/f3\012{\012printf '%s\n' '--- tables ---'; docker compose exec -T postgres psql -U evcharging -d evcharging_f3 -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('charging_session','charging_event') ORDER BY table_name;"\012printf '%s\n' '--- flyway history ---'; docker compose exec -T postgres psql -U evcharging -d evcharging_f3 -c "SELECT installed_rank,version,description,success FROM flyway_schema_history ORDER BY installed_rank; SELECT count(*) AS v1_count FROM flyway_schema_history WHERE version='1';"\012printf '%s\n' '--- constraints ---'; docker compose exec -T postgres psql -U evcharging -d evcharging_f3 -c "SELECT table_name,constraint_name,constraint_type FROM information_schema.table_constraints WHERE table_schema='public' AND constraint_name IN ('uk_charging_session_session_id','uk_charging_event_event_id') ORDER BY constraint_name;"\012printf '%s\n' '--- indexes ---'; docker compose exec -T postgres psql -U evcharging -d evcharging_f3 -c "SELECT tablename,indexname,indexdef FROM pg_indexes WHERE schemaname='public' AND tablename IN ('charging_session','charging_event') ORDER BY tablename,indexname;"\012printf '%s\n' '--- columns ---'; docker compose exec -T postgres psql -U evcharging -d evcharging_f3 -c "SELECT table_name,column_name,data_type,is_nullable FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('charging_session','charging_event') ORDER BY table_name,ordinal_position;"\012printf '%s\n' '--- named volume state ---'; docker volume inspect evcharging_postgres-data evcharging_kafka-data --format '{{.Name}}|{{.Mountpoint}}'\012printf '%s\n' '--- final app process check ---'; ps -axo pid=,command= | rg 'GradleWrapperMain bootRun|com.example.charging.ChargingApplication' || echo 'no app process remains'\012} > "$F3/catalog.txt"\012printf 'catalog query exit=%s\n' "$?" > "$F3/catalog-result.txt"\012cat "$F3/catalog.txt"
+44468 rg GradleWrapperMain bootRun|com.example.charging.ChargingApplication
+--- corrected final app process check (Java process only) ---
+no app process remains

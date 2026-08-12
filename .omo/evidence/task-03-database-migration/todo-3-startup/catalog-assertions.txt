@@ -1,0 +1,88 @@
+Pager usage is off.
+== tables and columns ==
+    table_name    |  column_name  | ordinal_position |        data_type         | character_maximum_length | numeric_precision | numeric_scale | is_nullable 
+------------------+---------------+------------------+--------------------------+--------------------------+-------------------+---------------+-------------
+ charging_event   | id            |                1 | bigint                   |                          |                64 |             0 | NO
+ charging_event   | event_id      |                2 | character varying        |                          |                   |               | NO
+ charging_event   | session_id    |                3 | character varying        |                          |                   |               | NO
+ charging_event   | charger_id    |                4 | character varying        |                          |                   |               | NO
+ charging_event   | event_type    |                5 | character varying        |                          |                   |               | NO
+ charging_event   | sequence      |                6 | bigint                   |                          |                64 |             0 | NO
+ charging_event   | battery_level |                7 | integer                  |                          |                32 |             0 | YES
+ charging_event   | charged_kwh   |                8 | numeric                  |                          |                12 |             3 | YES
+ charging_event   | occurred_at   |                9 | timestamp with time zone |                          |                   |               | NO
+ charging_event   | processed_at  |               10 | timestamp with time zone |                          |                   |               | NO
+ charging_session | id            |                1 | bigint                   |                          |                64 |             0 | NO
+ charging_session | session_id    |                2 | character varying        |                          |                   |               | NO
+ charging_session | charger_id    |                3 | character varying        |                          |                   |               | NO
+ charging_session | status        |                4 | character varying        |                          |                   |               | NO
+ charging_session | battery_level |                5 | integer                  |                          |                32 |             0 | YES
+ charging_session | charged_kwh   |                6 | numeric                  |                          |                12 |             3 | YES
+ charging_session | last_sequence |                7 | bigint                   |                          |                64 |             0 | NO
+ charging_session | started_at    |                8 | timestamp with time zone |                          |                   |               | YES
+ charging_session | completed_at  |                9 | timestamp with time zone |                          |                   |               | YES
+ charging_session | created_at    |               10 | timestamp with time zone |                          |                   |               | NO
+ charging_session | updated_at    |               11 | timestamp with time zone |                          |                   |               | NO
+(21 rows)
+
+== named unique constraints ==
+    table_name    |        constraint_name         | constraint_type | column_name 
+------------------+--------------------------------+-----------------+-------------
+ charging_event   | uk_charging_event_event_id     | UNIQUE          | event_id
+ charging_session | uk_charging_session_session_id | UNIQUE          | session_id
+(2 rows)
+
+== indexes ==
+    tablename     |              indexname              |                                                   indexdef                                                   
+------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------
+ charging_event   | charging_event_pkey                 | CREATE UNIQUE INDEX charging_event_pkey ON public.charging_event USING btree (id)
+ charging_event   | idx_charging_event_session_sequence | CREATE INDEX idx_charging_event_session_sequence ON public.charging_event USING btree (session_id, sequence)
+ charging_event   | uk_charging_event_event_id          | CREATE UNIQUE INDEX uk_charging_event_event_id ON public.charging_event USING btree (event_id)
+ charging_session | charging_session_pkey               | CREATE UNIQUE INDEX charging_session_pkey ON public.charging_session USING btree (id)
+ charging_session | uk_charging_session_session_id      | CREATE UNIQUE INDEX uk_charging_session_session_id ON public.charging_session USING btree (session_id)
+(5 rows)
+
+== flyway history ==
+ installed_rank | version |      description       | success 
+----------------+---------+------------------------+---------
+              1 | 1       | create charging tables | t
+(1 row)
+
+== counts ==
+ session_rows | event_rows | v1_success_count 
+--------------+------------+------------------
+            0 |          0 |                1
+(1 row)
+
+
+== volumes ==
+[
+    {
+        "CreatedAt": "2026-08-12T10:47:24Z",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.config-hash": "6fc53ba644dabd6dedb8d878f0c0f1c83dbdb314d1e7362b920bacb0bbe00d30",
+            "com.docker.compose.project": "evcharging",
+            "com.docker.compose.version": "2.38.2",
+            "com.docker.compose.volume": "postgres-data"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/evcharging_postgres-data/_data",
+        "Name": "evcharging_postgres-data",
+        "Options": null,
+        "Scope": "local"
+    },
+    {
+        "CreatedAt": "2026-08-12T11:52:32Z",
+        "Driver": "local",
+        "Labels": {
+            "com.docker.compose.config-hash": "cbc7606bd42ab980d96aab4e956885fe9235b9194a2f2b97301445aef2d8912d",
+            "com.docker.compose.project": "evcharging",
+            "com.docker.compose.version": "2.38.2",
+            "com.docker.compose.volume": "kafka-data"
+        },
+        "Mountpoint": "/var/lib/docker/volumes/evcharging_kafka-data/_data",
+        "Name": "evcharging_kafka-data",
+        "Options": null,
+        "Scope": "local"
+    }
+]

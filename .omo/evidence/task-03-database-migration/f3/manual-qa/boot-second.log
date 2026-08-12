@@ -1,0 +1,84 @@
+^DStarting a Gradle Daemon, 1 busy and 1 stopped Daemons could not be reused, use --status for details
+
+
+[2A[1B[1m> Starting Daemon[m[17D[1B[1A> IDLE[0K[6D[1B[2A[1m<[0;1m-------------> 0% INITIALIZING [40ms][m[38D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [137ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [242ms][m[39D[1B[1m> Evaluating settings[m[21D[1B[2A[1m<[0;1m-------------> 0% INITIALIZING [342ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [442ms][m[39D[2B[2A[1m<[0;1m-------------> 0% INITIALIZING [542ms][m[39D[2B[2A[1m<[0;1m-------------> 0% CONFIGURING [641ms][m[0K[38D[1B[1m> root project[m[0K[14D[1B[2A[1m<[0;1m-------------> 0% CONFIGURING [740ms][m[38D[1B[1m> root project > Resolve dependencies of detachedConfiguration1[m[63D[1B[2A[1m<[0;1m-------------> 0% CONFIGURING [840ms][m[38D[1B[1m> root project[m[0K[14D[1B[2A[1m<[0;1m-------------> 0% CONFIGURING [941ms][m[38D[2B[2A[1m<[0;1m-------------> 0% CONFIGURING [1s][m[0K[35D[2B[2A[1m<[0;32;1m=============[0;39;1m> 100% CONFIGURING [1s][m[37D[1B[1m> Extracting toolchain metadata from '/Users/yanghaechan/Library/Java/JavaVirtu[m[79D[1B[1A[1m> Resolve dependencies of :detachedConfiguration1 > Resolve dependencies of :de[m[79D[1B[1A> IDLE[0K[6D[1B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [1s][m[0K[34D[1B[1m> :bootRun > Resolve dependencies of :runtimeClasspath[m[54D[1B[1A[1m> :bootRun[m[0K[10D[1B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [2s][m[34D[2B[2A[0K
+[31;1m> Task :bootRun[0;39m[31m FAILED[39m[0K
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.5)
+
+2026-08-13T00:39:10.253+09:00  INFO 44697 --- [evcharging] [           main] c.example.charging.ChargingApplication   : Starting ChargingApplication using Java 21.0.12 with PID 44697 (/Users/yanghaechan/orca/projects/evcharging/build/classes/java/main started by yanghaechan in /Users/yanghaechan/orca/projects/evcharging)
+2026-08-13T00:39:10.254+09:00  INFO 44697 --- [evcharging] [           main] c.example.charging.ChargingApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-08-13T00:39:10.423+09:00  INFO 44697 --- [evcharging] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-13T00:39:10.429+09:00  INFO 44697 --- [evcharging] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 0 JPA repository interfaces.
+2026-08-13T00:39:10.576+09:00  INFO 44697 --- [evcharging] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-13T00:39:10.580+09:00  INFO 44697 --- [evcharging] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-13T00:39:10.580+09:00  INFO 44697 --- [evcharging] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-08-13T00:39:10.595+09:00  INFO 44697 --- [evcharging] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-13T00:39:10.596+09:00  INFO 44697 --- [evcharging] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 331 ms
+2026-08-13T00:39:10.673+09:00  INFO 44697 --- [evcharging] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-13T00:39:10.734+09:00  INFO 44697 --- [evcharging] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@28a6e171
+2026-08-13T00:39:10.735+09:00  INFO 44697 --- [evcharging] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-13T00:39:10.753+09:00  INFO 44697 --- [evcharging] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/qa_f3_20260813003836_44324 (PostgreSQL 16.14)
+2026-08-13T00:39:10.778+09:00  INFO 44697 --- [evcharging] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.010s)
+2026-08-13T00:39:10.800+09:00  INFO 44697 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 1
+2026-08-13T00:39:10.801+09:00  INFO 44697 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2026-08-13T00:39:10.825+09:00  INFO 44697 --- [evcharging] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-13T00:39:10.838+09:00  INFO 44697 --- [evcharging] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2026-08-13T00:39:10.846+09:00  INFO 44697 --- [evcharging] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-13T00:39:10.919+09:00  INFO 44697 --- [evcharging] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-13T00:39:10.944+09:00  INFO 44697 --- [evcharging] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+        Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+        Database driver: undefined/unknown
+        Database version: 16.14
+        Autocommit mode: undefined/unknown
+        Isolation level: undefined/unknown
+        Minimum pool size: undefined/unknown
+        Maximum pool size: undefined/unknown
+2026-08-13T00:39:11.032+09:00  INFO 44697 --- [evcharging] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-13T00:39:11.033+09:00  INFO 44697 --- [evcharging] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-13T00:39:11.177+09:00  WARN 44697 --- [evcharging] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-08-13T00:39:11.178+09:00  INFO 44697 --- [evcharging] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-13T00:39:11.178+09:00  INFO 44697 --- [evcharging] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-13T00:39:11.216+09:00  INFO 44697 --- [evcharging] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-13T00:39:11.221+09:00  INFO 44697 --- [evcharging] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-08-13T00:39:11.226+09:00 ERROR 44697 --- [evcharging] [           main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+
+[31mFAILURE: [39m[31mBuild failed with an exception.[39m
+
+* What went wrong:
+Execution failed for task ':bootRun'.
+[33m> [39mProcess 'command '/Users/yanghaechan/Library/Java/JavaVirtualMachines/temurin-21.0.12/Contents/Home/bin/java'' finished with non-zero exit value 1
+
+* Try:
+[33m> [39mRun with [1m--stacktrace[m option to get the stack trace.
+[33m> [39mRun with [1m--info[m or [1m--debug[m option to get more log output.
+[33m> [39mRun with [1m--scan[m to get full insights.
+[33m> [39mGet more help at [1mhttps://help.gradle.org[m.
+
+[31;1mBUILD FAILED[0;39m in 4s
+4 actionable tasks: 1 executed, 3 up-to-date
+[0K
+[0K
+[2A[1m<[0;1m-------------> 0% WAITING[m[26D[1B> IDLE[6D[1B[2A[2K[1B[2K[1A[0m[?12l[?25h

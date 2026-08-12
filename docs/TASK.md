@@ -55,7 +55,7 @@ docker compose up -d
 
 ⸻
 
-### 3. Database Migration 구성
+### 3. Database Migration 구성 [완료]
 
 - Flyway 설정
 - charging_session 테이블 생성

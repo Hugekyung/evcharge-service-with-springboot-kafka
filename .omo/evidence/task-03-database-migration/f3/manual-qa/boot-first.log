@@ -1,0 +1,68 @@
+^D
+
+[2A[1m<[0;1m-------------> 0% CONFIGURING [15ms][m[37D[1B[1m> root project[m[14D[1B[2A[1m<[0;32;1m=============[0;39;1m> 100% CONFIGURING [120ms][m[40D[1B[1m> Resolve dependencies of :detachedConfiguration1 > Resolve dependencies of :de[m[79D[1B[2A[1m<[0;32;1m=============[0;39;1m> 100% CONFIGURING [219ms][m[40D[1B[1m> Resolve dependencies of :detachedConfiguration85[m[0K[50D[1B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [319ms][m[0K[37D[1B[1m> :bootRun[m[0K[10D[1B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [419ms][m[37D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [520ms][m[37D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [620ms][m[37D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [720ms][m[37D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [816ms][m[37D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [920ms][m[37D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [1s][m[0K[34D[2B[2A[1m<[0;32;1m==========[0;39;1m---> 80% EXECUTING [2s][m[34D[2B[2A[0K
+[1m> Task :bootRun[m[0K
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.5)
+
+2026-08-13T00:38:53.393+09:00  INFO 44514 --- [evcharging] [           main] c.example.charging.ChargingApplication   : Starting ChargingApplication using Java 21.0.12 with PID 44514 (/Users/yanghaechan/orca/projects/evcharging/build/classes/java/main started by yanghaechan in /Users/yanghaechan/orca/projects/evcharging)
+2026-08-13T00:38:53.394+09:00  INFO 44514 --- [evcharging] [           main] c.example.charging.ChargingApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-08-13T00:38:53.582+09:00  INFO 44514 --- [evcharging] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-13T00:38:53.588+09:00  INFO 44514 --- [evcharging] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 JPA repository interfaces.
+2026-08-13T00:38:53.743+09:00  INFO 44514 --- [evcharging] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-13T00:38:53.748+09:00  INFO 44514 --- [evcharging] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-13T00:38:53.748+09:00  INFO 44514 --- [evcharging] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2026-08-13T00:38:53.763+09:00  INFO 44514 --- [evcharging] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-13T00:38:53.763+09:00  INFO 44514 --- [evcharging] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 357 ms
+2026-08-13T00:38:53.843+09:00  INFO 44514 --- [evcharging] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-13T00:38:53.907+09:00  INFO 44514 --- [evcharging] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@31a136a6
+2026-08-13T00:38:53.907+09:00  INFO 44514 --- [evcharging] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-13T00:38:53.925+09:00  INFO 44514 --- [evcharging] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/qa_f3_20260813003836_44324 (PostgreSQL 16.14)
+2026-08-13T00:38:53.943+09:00  INFO 44514 --- [evcharging] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "public"."flyway_schema_history" does not exist yet
+2026-08-13T00:38:53.944+09:00  INFO 44514 --- [evcharging] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.005s)
+2026-08-13T00:38:53.952+09:00  INFO 44514 --- [evcharging] [           main] org.flywaydb.core.Flyway                 : All configured schemas are empty; baseline operation skipped. A baseline or migration script with a lower version than the baseline version may execute if available. Check the Schemas parameter if this is not intended.
+2026-08-13T00:38:53.953+09:00  INFO 44514 --- [evcharging] [           main] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "public"."flyway_schema_history" ...
+2026-08-13T00:38:53.988+09:00  INFO 44514 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+2026-08-13T00:38:53.991+09:00  INFO 44514 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Migrating schema "public" to version "1 - create charging tables"
+2026-08-13T00:38:54.008+09:00  INFO 44514 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema "public", now at version v1 (execution time 00:00.012s)
+2026-08-13T00:38:54.035+09:00  INFO 44514 --- [evcharging] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-13T00:38:54.056+09:00  INFO 44514 --- [evcharging] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2026-08-13T00:38:54.068+09:00  INFO 44514 --- [evcharging] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-13T00:38:54.150+09:00  INFO 44514 --- [evcharging] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-13T00:38:54.177+09:00  INFO 44514 --- [evcharging] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+        Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+        Database driver: undefined/unknown
+        Database version: 16.14
+        Autocommit mode: undefined/unknown
+        Isolation level: undefined/unknown
+        Minimum pool size: undefined/unknown
+        Maximum pool size: undefined/unknown
+2026-08-13T00:38:54.277+09:00  INFO 44514 --- [evcharging] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-13T00:38:54.279+09:00  INFO 44514 --- [evcharging] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-13T00:38:54.435+09:00  INFO 44514 --- [evcharging] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-13T00:38:54.438+09:00  INFO 44514 --- [evcharging] [           main] c.example.charging.ChargingApplication   : Started ChargingApplication in 1.176 seconds (process running for 1.278)
+2026-08-13T00:38:54.445+09:00  INFO 44514 --- [evcharging] [           main] o.a.k.clients.admin.AdminClientConfig    : AdminClientConfig values: 
+        auto.include.jmx.reporter = true
+        bootstrap.controllers = []
+        bootstrap.servers = [localhost:9092]
+        client.dns.lookup = use_all_dns_ips
+        client.id = evcharging-admin-0
+        connections.max.idle.ms = 300000
+        default.api.timeout.ms = 3000
+        enable.metrics.push = true
+        metadata.max.age.ms = 300000
+        metadata.recovery.strategy = none
+        metric.reporters = []
+        metrics.num.samples = 2
+        metrics.recording.level = INFO
+        metrics.sample.window.ms = 30000
+        receive.buffer.bytes = 65536
+        reconnect.backoff.max.ms = 1000
+        reconnect.backoff.

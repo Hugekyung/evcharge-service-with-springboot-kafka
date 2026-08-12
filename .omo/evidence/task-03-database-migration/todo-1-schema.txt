@@ -1,0 +1,70 @@
+UTC 2026-08-12T15:26:39Z
+feature/task-03-database-migration
+ M src/main/resources/application.yml
+?? .omo/
+?? src/main/resources/db/
+ charging_session_before | charging_event_before 
+-------------------------+-----------------------
+                         | 
+(1 row)
+
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+    table_name    | ordinal_position |  column_name  |        data_type         | numeric_precision | numeric_scale | is_nullable |                column_default                
+------------------+------------------+---------------+--------------------------+-------------------+---------------+-------------+----------------------------------------------
+ charging_event   |                1 | id            | bigint                   |                64 |             0 | NO          | nextval('charging_event_id_seq'::regclass)
+ charging_event   |                2 | event_id      | character varying        |                   |               | NO          | 
+ charging_event   |                3 | session_id    | character varying        |                   |               | NO          | 
+ charging_event   |                4 | charger_id    | character varying        |                   |               | NO          | 
+ charging_event   |                5 | event_type    | character varying        |                   |               | NO          | 
+ charging_event   |                6 | sequence      | bigint                   |                64 |             0 | NO          | 
+ charging_event   |                7 | battery_level | integer                  |                32 |             0 | YES         | 
+ charging_event   |                8 | charged_kwh   | numeric                  |                12 |             3 | YES         | 
+ charging_event   |                9 | occurred_at   | timestamp with time zone |                   |               | NO          | 
+ charging_event   |               10 | processed_at  | timestamp with time zone |                   |               | NO          | 
+ charging_session |                1 | id            | bigint                   |                64 |             0 | NO          | nextval('charging_session_id_seq'::regclass)
+ charging_session |                2 | session_id    | character varying        |                   |               | NO          | 
+ charging_session |                3 | charger_id    | character varying        |                   |               | NO          | 
+ charging_session |                4 | status        | character varying        |                   |               | NO          | 
+ charging_session |                5 | battery_level | integer                  |                32 |             0 | YES         | 
+ charging_session |                6 | charged_kwh   | numeric                  |                12 |             3 | YES         | 
+ charging_session |                7 | last_sequence | bigint                   |                64 |             0 | NO          | 
+ charging_session |                8 | started_at    | timestamp with time zone |                   |               | YES         | 
+ charging_session |                9 | completed_at  | timestamp with time zone |                   |               | YES         | 
+ charging_session |               10 | created_at    | timestamp with time zone |                   |               | NO          | 
+ charging_session |               11 | updated_at    | timestamp with time zone |                   |               | NO          | 
+(21 rows)
+
+     relation     |            conname             | contype |     definition      
+------------------+--------------------------------+---------+---------------------
+ charging_event   | charging_event_pkey            | p       | PRIMARY KEY (id)
+ charging_event   | uk_charging_event_event_id     | u       | UNIQUE (event_id)
+ charging_session | charging_session_pkey          | p       | PRIMARY KEY (id)
+ charging_session | uk_charging_session_session_id | u       | UNIQUE (session_id)
+(4 rows)
+
+    tablename     |              indexname              |                                                   indexdef                                                   
+------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------
+ charging_event   | charging_event_pkey                 | CREATE UNIQUE INDEX charging_event_pkey ON public.charging_event USING btree (id)
+ charging_event   | idx_charging_event_session_sequence | CREATE INDEX idx_charging_event_session_sequence ON public.charging_event USING btree (session_id, sequence)
+ charging_event   | uk_charging_event_event_id          | CREATE UNIQUE INDEX uk_charging_event_event_id ON public.charging_event USING btree (event_id)
+ charging_session | charging_session_pkey               | CREATE UNIQUE INDEX charging_session_pkey ON public.charging_session USING btree (id)
+ charging_session | uk_charging_session_session_id      | CREATE UNIQUE INDEX uk_charging_session_session_id ON public.charging_session USING btree (session_id)
+(5 rows)
+
+ exact_columns_and_nullability | exact_numeric_shape | bigserial_defaults | only_pk_and_unique_constraints | named_uniques | named_composite_index | no_extra_indexes 
+-------------------------------+---------------------+--------------------+--------------------------------+---------------+-----------------------+------------------
+ t                             | t                   | t                  | t                              | t             | t                     | t
+(1 row)
+
+ datname 
+---------
+(0 rows)
+
+NOTICE:  database "todo1_schema_verify" does not exist, skipping
+CREATE TABLE
+CREATE TABLE
+CREATE INDEX
+hardened_binary_assertions=t|t|t|t|t|t|t
+0

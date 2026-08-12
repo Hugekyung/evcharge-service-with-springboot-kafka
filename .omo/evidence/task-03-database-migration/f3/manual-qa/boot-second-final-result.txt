@@ -1,0 +1,4 @@
+result=PASS
+pid=44855
+elapsed_seconds=3
+invocation=script -q .omo/evidence/task-03-database-migration/f3/manual-qa/boot-second-final.log env SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/qa_f3_20260813003836_44324 SPRING_DATASOURCE_USERNAME=evcharging SPRING_DATASOURCE_PASSWORD=evcharging SERVER_PORT=18081 ./gradlew bootRun

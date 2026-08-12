@@ -1,0 +1,81 @@
+== config source ==
+spring:
+  application:
+    name: evcharging
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/evcharging
+    username: evcharging
+    password: evcharging
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-migration-naming: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    listener:
+      auto-startup: false
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: evcharging-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.example.charging
+
+server:
+  port: 8080
+== expected config assertions ==
+6:    url: jdbc:postgresql://localhost:5432/evcharging
+13:      ddl-auto: validate
+17:    enabled: true
+18:    baseline-on-migrate: true
+19:    validate-migration-naming: true
+22:    bootstrap-servers: localhost:9092
+== dependency diff (must be empty) ==
+== git diff check ==
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava NO-SOURCE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test NO-SOURCE
+
+BUILD SUCCESSFUL in 478ms
+2 actionable tasks: 2 up-to-date
+gradlew_test_exit_code=0
+== resolved startup surface ==
+Invocation: SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/evcharging_qa ./gradlew bootRun (bounded readiness run; see Todo 3 boot logs)
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-second.log:29:2026-08-13T00:29:49.492+09:00  INFO 39732 --- [evcharging] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/evcharging_qa (PostgreSQL 16.14)
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-second.log:31:2026-08-13T00:29:49.524+09:00  INFO 39732 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 1
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-second.log:48:2026-08-13T00:29:49.957+09:00  INFO 39732 --- [evcharging] [           main] c.example.charging.ChargingApplication   : Started ChargingApplication in 1.135 seconds (process running for 1.234)
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-second.log:125:2026-08-13T00:29:50.002+09:00  INFO 39732 --- [evcharging] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 3.9.1
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-first.log:29:2026-08-13T00:29:35.537+09:00  INFO 39674 --- [evcharging] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/evcharging_qa (PostgreSQL 16.14)
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-first.log:34:2026-08-13T00:29:35.599+09:00  INFO 39674 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": << Empty Schema >>
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-first.log:36:2026-08-13T00:29:35.625+09:00  INFO 39674 --- [evcharging] [           main] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema "public", now at version v1 (execution time 00:00.017s)
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-first.log:52:2026-08-13T00:29:36.042+09:00  INFO 39674 --- [evcharging] [           main] c.example.charging.ChargingApplication   : Started ChargingApplication in 1.181 seconds (process running for 1.275)
+.omo/evidence/task-03-database-migration/todo-3-startup/boot-first.log:129:2026-08-13T00:29:36.085+09:00  INFO 39674 --- [evcharging] [           main] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 3.9.1
+== malformed filename probe ==
+exit_code=1 (expected non-zero)
+42:2026-08-13T00:32:51.714+09:00 ERROR 40681 --- [evcharging] [           main] o.s.boot.SpringApplication               : Application run failed
+76:Caused by: org.flywaydb.core.api.exception.FlywayValidateException: Validate failed: Migrations have failed validation
+103:BUILD FAILED in 1s
+restored_filename=yes
+== cleanup receipt ==
+Temporary V1__bad.sql restored to V1__create_charging_tables.sql; malformed boot exited 1; no boot process remains.
+== dependency guard ==
+dependency_diff=empty
+== final migration filename ==
+restored=yes

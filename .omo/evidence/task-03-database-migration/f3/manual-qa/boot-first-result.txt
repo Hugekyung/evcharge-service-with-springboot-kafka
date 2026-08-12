@@ -1,0 +1,3 @@
+result=PASS
+pid=44498
+elapsed_seconds=3
