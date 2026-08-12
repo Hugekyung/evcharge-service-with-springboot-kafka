@@ -9,7 +9,7 @@ docker compose up -d
 ./gradlew bootRun
 ```
 
-애플리케이션이 시작되면 Kafka Admin 설정을 통해 `charging-events` 토픽이 자동으로 생성된다.
+애플리케이션이 시작되면 Kafka Admin 설정을 통해 `charging-events` 토픽이 자동으로 생성된다. Kafka가 아직 준비되지 않은 경우 1초, 2초, 4초, 8초 간격으로 최대 5회 재시도하며, 끝까지 연결되지 않으면 애플리케이션 시작을 실패시킨다. 토픽 생성이 성공한 뒤 Kafka Listener를 시작한다.
 
 ## ADR
 
