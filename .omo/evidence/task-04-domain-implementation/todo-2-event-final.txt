@@ -1,0 +1,43 @@
+Task 4 / Todo 2 final verification
+Captured: 2026-08-13 Asia/Seoul
+
+Deliverable
+- Added src/main/java/com/example/charging/domain/ChargingEvent.java
+- Added src/main/java/com/example/charging/domain/ChargingEventType.java
+- Marked only the Task 4 heading in docs/TASK.md as [완료] after validation.
+
+Scenario 1: Gradle compile/test gate
+Invocation: ./gradlew test
+Binary observable: exit code 0 and BUILD SUCCESSFUL.
+Observed output:
+> Task :compileJava
+> Task :processResources UP-TO-DATE
+> Task :classes
+> Task :compileTestJava NO-SOURCE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test NO-SOURCE
+
+BUILD SUCCESSFUL in 672ms
+2 actionable tasks: 1 executed, 1 up-to-date
+Result: PASS
+
+Scenario 2: real application schema-validation surface
+Invocation: ./gradlew bootRun --args='--server.port=0' (PTY; PostgreSQL and Kafka already healthy)
+Binary observable: Flyway validates V1, Hibernate initializes the EntityManagerFactory, and Spring reports Started ChargingApplication with no schema-validation error.
+Observed output:
+Successfully validated 1 migration (execution time 00:00.011s)
+Current version of schema "public": 1
+Schema "public" is up to date. No migration necessary.
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+Tomcat started on port 54048 (http) with context path '/'
+Started ChargingApplication in 1.34 seconds (process running for 1.445)
+Result: PASS
+
+Cleanup receipt
+- The PTY boot process was stopped with Ctrl-C after the started signal.
+- No listener remained on the ephemeral port 54048.
+- Existing Compose services were left running and healthy: kafka, postgres.
+
+Interpretation
+The real application loaded ChargingEvent together with ChargingSession using ddl-auto=validate against the existing V1 PostgreSQL schema. Therefore the requested table, column, enum, numeric, and timestamp mappings did not produce a Hibernate schema mismatch.

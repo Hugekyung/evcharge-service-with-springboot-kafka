@@ -1,0 +1,54 @@
+Task 4 / Todo 2 adversarial verification
+Captured: 2026-08-13 Asia/Seoul
+
+Applicable risk: dirty_worktree
+Scenario/invocation: git status --short; git diff -- docs/TASK.md
+Binary observable: pre-existing .omo state and Todo 1 session files remain present; this Todo adds only the two event files and the one Task 4 heading marker.
+Observed inventory:
+ M .omo/boulder.json
+ M .omo/start-work/ledger.jsonl
+ M docs/TASK.md
+?? .omo/drafts/task-04-domain-implementation.md
+?? .omo/evidence/task-04-domain-implementation/
+?? .omo/plans/task-04-domain-implementation.md
+?? src/main/java/com/example/charging/domain/ChargingEvent.java
+?? src/main/java/com/example/charging/domain/ChargingEventType.java
+?? src/main/java/com/example/charging/domain/ChargingSession.java
+?? src/main/java/com/example/charging/domain/ChargingSessionStatus.java
+Task markdown diff contains exactly:
+-### 4. Domain 구현
++### 4. Domain 구현 [완료]
+Result: PASS
+
+Applicable risk: stale_state
+Scenario/invocation: docker compose ps --format '{{.Service}} {{.State}} {{.Health}}'; docker compose exec -T postgres psql -U evcharging -d evcharging -c "SELECT version, success FROM flyway_schema_history ORDER BY installed_rank;" -c "\\d+ charging_event"
+Binary observable: both services are healthy and the live V1 table contains the exact required event columns and types.
+Observed:
+kafka running healthy
+postgres running healthy
+Flyway version 1 success=true
+charging_event includes id bigint, event_id/session_id/charger_id/event_type varchar, sequence bigint, battery_level integer, charged_kwh numeric(12,3), occurred_at/processed_at timestamp with time zone, and uk_charging_event_event_id UNIQUE.
+Result: PASS
+
+Applicable risk: misleading_success_output
+Scenario/invocation: ./gradlew bootRun --args='--server.port=0'
+Binary observable: not merely a successful compile; the real application must initialize JPA under ddl-auto=validate against live PostgreSQL and report Started ChargingApplication.
+Observed: Flyway validated V1; JPA EntityManagerFactory initialized; application started on port 54048; no schema-validation error.
+Result: PASS
+
+Applicable risk: hung/long command if boot
+Scenario/invocation: PTY bootRun with --server.port=0, then Ctrl-C after the started signal; lsof -nP -iTCP:54048 -sTCP:LISTEN
+Binary observable: process stops and no listener remains; existing Compose services remain healthy.
+Observed: no listener on 54048; kafka running healthy; postgres running healthy.
+Result: PASS
+
+Static scope/mapping guard
+Invocation: rg -n '@(ManyToOne|OneToMany|OneToOne|ManyToMany|JoinColumn)' src/main/java/com/example/charging/domain/ChargingEvent.java; git diff --check
+Binary observable: no relationship annotation and no whitespace error.
+Observed:
+PASS: no JPA relationship annotations in ChargingEvent.java
+PASS: git diff --check exited 0
+The source declares @Table(name = "charging_event"), @GeneratedValue(strategy = GenerationType.IDENTITY), @Enumerated(EnumType.STRING), event_id unique/non-null, the required non-null scalar fields, charged_kwh precision=12 scale=3, and Instant occurred_at/processed_at.
+Result: PASS
+
+Other risk classes: N/A. The task contains no concurrency, external write, authentication, network contract, or migration mutation; exact mapping was tested by the live application validation path above.

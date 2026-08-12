@@ -70,7 +70,7 @@ Spring Boot 실행 시 Flyway Migration 성공
 
 ⸻
 
-### 4. Domain 구현
+### 4. Domain 구현 [완료]
 
 ChargingSession
 

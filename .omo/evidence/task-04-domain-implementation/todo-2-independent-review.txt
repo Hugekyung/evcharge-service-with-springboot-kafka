@@ -1,0 +1,32 @@
+Task 4 / Todo 2 independent adversarial verification
+Verifier: lazycodex-gate-reviewer
+Verdict: confirmed
+Confidence: high
+
+Direct inspection confirmed:
+- ChargingEvent maps charging_event with identity Long id; event_id unique/non-null; session_id and charger_id non-null; @Enumerated(EnumType.STRING) eventType; primitive non-null long sequence; nullable Integer batteryLevel; BigDecimal chargedKwh precision 12 scale 3; non-null Instant occurredAt and processedAt.
+- ChargingEvent has no JPA relationship annotation or business logic.
+- ChargingEventType values are exactly CHARGING_STARTED, CHARGING_PROGRESS, CHARGING_COMPLETED, CHARGING_FAILED.
+- docs/TASK.md changes exactly one heading: `### 4. Domain 구현` to `### 4. Domain 구현 [완료]` (numstat 1 insertion / 1 deletion).
+
+Independent commands and binary results:
+1. `./gradlew test` -> exit 0, BUILD SUCCESSFUL. `:test NO-SOURCE` was classified as compile-only evidence.
+2. `git diff --check` -> exit 0, no output.
+3. `git diff -- docs/TASK.md && git diff --numstat -- docs/TASK.md` -> only Task 4 heading; numstat `1 1 docs/TASK.md`.
+4. `rg -n '@(ManyToOne|OneToMany|OneToOne|ManyToMany|JoinColumn)' src/main/java/com/example/charging/domain/ChargingEvent.java` -> empty match set (rg exit 1), required negative result.
+5. `docker compose ps --format '{{.Service}} {{.State}} {{.Health}}'` -> kafka running healthy; postgres running healthy.
+6. `docker compose exec -T postgres psql -U evcharging -d evcharging -c '\\d+ charging_event'` -> live V1 table types, nullability, unique event_id constraint, and session/sequence index exactly match the entity requirement.
+7. PTY `./gradlew bootRun --args='--server.port=0'` -> Flyway successfully validated V1; Hibernate initialized EntityManagerFactory; Tomcat started on port 54161; Started ChargingApplication in 1.37 seconds; no mapping/schema error.
+
+UltraQA results:
+- dirty_worktree PASS: current inventory distinguished pre-existing session/.omo artifacts from this Todo 2 surface; no review mutation.
+- stale_state PASS: live services and live V1 table directly inspected.
+- misleading_success_output PASS: live `ddl-auto=validate` startup, not NO-SOURCE test output, established the mapping proof.
+- hung_or_long_commands PASS: reviewer stopped its boot process with Ctrl-C; `lsof -nP -iTCP:54161 -sTCP:LISTEN` was empty.
+- malformed_input, prompt_injection, cancel_resume, flaky_tests, repeated_interruptions: N/A — no corresponding trigger fact for this persistence-only Todo.
+
+Cleanup receipt:
+- Stopped only the reviewer-created PID 80026 / Gradle bootRun process.
+- No listener remains on port 54161.
+- Kafka and PostgreSQL remain running and healthy.
+- No code, docs, evidence, Git state, Docker services, volumes, or databases were modified/deleted by the review.

@@ -1,0 +1,97 @@
+Task 4 / Todo 1 — ChargingSession domain mapping evidence
+Recorded: 2026-08-13 (Asia/Seoul)
+
+Scope implemented
+- Added: src/main/java/com/example/charging/domain/ChargingSession.java
+- Added: src/main/java/com/example/charging/domain/ChargingSessionStatus.java
+- No business workflow, repository, service, Kafka, migration, configuration, build, test, or task-document changes made by this todo.
+
+Success criterion: ChargingSession and ChargingSessionStatus exist with the requested exact persistence mapping.
+Scenario: Source mapping inspection.
+Invocation:
+  rg -n '@(Entity|Table|Id|GeneratedValue|Enumerated|Column)|private (Long|String|ChargingSessionStatus|Integer|BigDecimal|long|Instant)' src/main/java/com/example/charging/domain/ChargingSession.java
+Binary observable: exit 0; output showed @Entity, @Table(name = "charging_session"), @GeneratedValue(strategy = GenerationType.IDENTITY), all explicit required columns, @Enumerated(EnumType.STRING), BigDecimal precision = 12/scale = 3, and Instant timestamp fields.
+Captured output:
+  14:@Entity
+  15:@Table(name = "charging_session")
+  18:    @Id
+  19:    @GeneratedValue(strategy = GenerationType.IDENTITY)
+  20:    @Column(name = "id")
+  21:    private Long id;
+  23:    @Column(name = "session_id", nullable = false, unique = true)
+  24:    private String sessionId;
+  26:    @Column(name = "charger_id", nullable = false)
+  27:    private String chargerId;
+  29:    @Enumerated(EnumType.STRING)
+  30:    @Column(name = "status", nullable = false)
+  31:    private ChargingSessionStatus status;
+  33:    @Column(name = "battery_level")
+  34:    private Integer batteryLevel;
+  36:    @Column(name = "charged_kwh", precision = 12, scale = 3)
+  37:    private BigDecimal chargedKwh;
+  39:    @Column(name = "last_sequence", nullable = false)
+  40:    private long lastSequence;
+  42:    @Column(name = "started_at")
+  43:    private Instant startedAt;
+  45:    @Column(name = "completed_at")
+  46:    private Instant completedAt;
+  48:    @Column(name = "created_at", nullable = false)
+  49:    private Instant createdAt;
+  51:    @Column(name = "updated_at", nullable = false)
+  52:    private Instant updatedAt;
+
+Scenario: Enum constants inspection.
+Invocation:
+  sed -n '1,80p' src/main/java/com/example/charging/domain/ChargingSessionStatus.java
+Binary observable: output contains exactly CHARGING, COMPLETED, FAILED.
+Captured output:
+  public enum ChargingSessionStatus {
+      CHARGING,
+      COMPLETED,
+      FAILED
+  }
+
+Success criterion: Java compiles through the requested Gradle test invocation.
+Scenario: Existing Gradle test task.
+Invocation:
+  ./gradlew test
+Binary observable: exit 0; BUILD SUCCESSFUL.
+Captured output:
+  > Task :compileJava
+  > Task :processResources UP-TO-DATE
+  > Task :classes
+  > Task :compileTestJava NO-SOURCE
+  > Task :processTestResources NO-SOURCE
+  > Task :testClasses UP-TO-DATE
+  > Task :test NO-SOURCE
+
+  BUILD SUCCESSFUL in 1s
+  2 actionable tasks: 1 executed, 1 up-to-date
+
+Success criterion: Existing PostgreSQL migration accepts the ChargingSession Hibernate mapping.
+Scenario: Application context startup against healthy local Docker Compose PostgreSQL and Kafka.
+Invocation:
+  ./gradlew bootRun --args='--spring.main.web-application-type=none'
+Binary observable: exit 0; Flyway validated V1, Hibernate initialized the JPA EntityManagerFactory, and Spring reported Started with no schema-validation exception.
+Captured output:
+  Database: jdbc:postgresql://localhost:5432/evcharging (PostgreSQL 16.14)
+  Successfully validated 1 migration (execution time 00:00.010s)
+  Schema "public" is up to date. No migration necessary.
+  Initialized JPA EntityManagerFactory for persistence unit 'default'
+  Started ChargingApplication in 1.131 seconds (process running for 1.235)
+  BUILD SUCCESSFUL in 1s
+
+Adversarial check: dirty worktree.
+Scenario: Read-only changed-path and whitespace inspection.
+Invocation:
+  git diff --name-only
+  git ls-files --others --exclude-standard
+  git diff --check
+Binary observable: git diff --check exited 0 with no output. The tracked pre-existing change is .omo/boulder.json; pre-existing untracked planning files are .omo/drafts/task-04-domain-implementation.md and .omo/plans/task-04-domain-implementation.md. The only new source files are the two requested domain paths. This evidence file is an instructed non-source artifact.
+
+Adversarial check: misleading success output.
+Observation: ./gradlew test reports "test NO-SOURCE", so it proves compilation but no behavioral test execution. The separate real schema-startup scenario above is the non-empty mapping observable; no behavioral claim is made for Todo 1.
+
+Independent-risk notes and cleanup
+- Risk: No JDT language server is installed. Installation was not requested, so its install decision was recorded as declined; Gradle compilation and real schema startup provide the available validation.
+- Cleanup: No commit, push, infrastructure mutation, or unrelated-worktree cleanup performed. The existing healthy Docker Compose containers were only used for read/validate startup and left running.

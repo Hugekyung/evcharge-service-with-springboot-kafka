@@ -1,0 +1,88 @@
+Todo 1 independent adversarial verification
+Recorded: 2026-08-13 (Asia/Seoul)
+
+DoneClaim
+- ChargingSession.java and ChargingSessionStatus.java implement the Todo 1 persistence-only domain mapping exactly enough to compile and validate against the live PostgreSQL V1 schema.
+- AdversarialVerify: confirmed
+
+Original intent and desired outcome
+- Introduce only the ChargingSession JPA entity and its status enum, mapped exactly to charging_session, without workflow/transition logic or unrelated production changes.
+- The concrete user-visible outcome at this stage is a schema-compatible domain type ready for later repository/service work, not completed charging behavior.
+
+Checked artifacts
+- .omo/plans/task-04-domain-implementation.md (Todo 1 entry)
+- .omo/evidence/task-04-domain-implementation/todo-1-session.txt (prior executor claim, treated as untrusted and independently reproduced)
+- src/main/java/com/example/charging/domain/ChargingSession.java
+- src/main/java/com/example/charging/domain/ChargingSessionStatus.java
+- src/main/resources/db/migration/V1__create_charging_tables.sql
+- src/main/resources/application.yml
+
+Scenario: Pre-change impossibility / failing-first substitute authorized by the brief
+Invocation: git show HEAD:src/main/java/com/example/charging/domain/ChargingSession.java
+Binary observable: exit 128; fatal output says the path exists on disk but not in HEAD.
+Result: PASS. There was no pre-existing entity seam to exercise, so no speculative deletion-only or implementation-mirroring test was added.
+
+Scenario: Exact source mapping inspection
+Invocation: rg -n '@(Entity|Table|Id|GeneratedValue|Enumerated|Column)|private (Long|String|ChargingSessionStatus|Integer|BigDecimal|long|Instant)|protected ChargingSession' src/main/java/com/example/charging/domain/ChargingSession.java && rg -n 'CHARGING|COMPLETED|FAILED' src/main/java/com/example/charging/domain/ChargingSessionStatus.java
+Binary observable: exit 0. ChargingSession has @Entity; @Table(name = "charging_session"); identity-generated Long id; explicit id, session_id, charger_id, status, battery_level, charged_kwh, last_sequence, started_at, completed_at, created_at, and updated_at columns; sessionId is unique/non-null; chargerId/status/lastSequence/createdAt/updatedAt are non-null; batteryLevel/chargedKwh/startedAt/completedAt remain nullable; status uses EnumType.STRING; chargedKwh uses precision 12/scale 3; lastSequence is primitive long. The enum source contains exactly CHARGING, COMPLETED, FAILED.
+Result: PASS.
+
+Scenario: Workflow and slop/maintenance review
+Invocation: rg -n 'transition|complete|fail|start|progress|set[A-Z]|save\(|process\(' src/main/java/com/example/charging/domain/ChargingSession.java src/main/java/com/example/charging/domain/ChargingSessionStatus.java || true
+Binary observable: matches are limited to startedAt/completedAt field mappings and their getters; no transition, persistence operation, setter, or processing method exists.
+Invocation: awk pure-LOC counts for both sources.
+Binary observable: ChargingSession.java = 75 pure LOC; ChargingSessionStatus.java = 6 pure LOC, both below the 250-LOC ceiling.
+Direct remove-ai-slops/programming perspective: no obvious comments, defensive branches, needless abstractions, dead code, duplication, complex branches, performance traps, oversized files, tautological tests, deletion-only tests, implementation-mirroring tests, unnecessary parsing/normalization, or scope drift found. The protected no-arg constructor is a required JPA seam; getters expose persisted state without adding workflow.
+Result: PASS.
+
+Scenario: Compile/test task
+Invocation: ./gradlew test
+Binary observable: exit 0 in 0.37 seconds; BUILD SUCCESSFUL; compileTestJava NO-SOURCE and test NO-SOURCE.
+Result: PASS as compile-only evidence. It is not behavioral evidence and is not presented as such.
+
+Scenario: Real terminal schema validation
+Invocation: ./gradlew bootRun --args='--spring.main.web-application-type=none'
+Binary observable: exit 0 in 1.83 seconds. Relevant output:
+  Database: jdbc:postgresql://localhost:5432/evcharging (PostgreSQL 16.14)
+  Successfully validated 1 migration
+  Current version of schema "public": 1
+  Schema "public" is up to date. No migration necessary.
+  Initialized JPA EntityManagerFactory for persistence unit 'default'
+  Started ChargingApplication in 1.146 seconds
+  BUILD SUCCESSFUL in 1s
+No schema mismatch or mapping exception appeared.
+Result: PASS. This is the direct persistence observable.
+
+Scenario: Whitespace and path inventory
+Invocation: git diff --check
+Binary observable: exit 0 with no output.
+Invocation before verification: git status --short --untracked-files=all
+Binary observable: pre-existing tracked .omo/boulder.json modification; untracked Todo plan/draft/evidence state; and only the requested ChargingSession.java and ChargingSessionStatus.java production sources.
+Invocation after runtime verification: git status --short --untracked-files=all
+Binary observable: same inventory before this report was written; runtime verification created no production/config/migration/test changes.
+Result: PASS. The report itself is the sole instructed verifier artifact added by this verifier.
+
+UltraQA adversarial classes
+- dirty_worktree: PASS. Pre-existing .omo state is distinguished from the two Todo 1 source files; unrelated changes were preserved.
+- misleading_success_output: PASS. test NO-SOURCE is explicitly classified as compile-only; approval relies on the live schema-startup observable.
+- stale_state: PASS. Live startup reported PostgreSQL 16.14, Flyway migration count 1, current schema version 1, schema up to date, and successful Hibernate validation.
+- hung_or_long_commands: PASS. The exact bootRun invocation completed normally in 1.83 seconds, below the 30-second command yield bound.
+- malformed_input: N/A; Todo 1 introduces no input boundary.
+- prompt_injection: N/A; Todo 1 consumes no external text or instructions at runtime.
+- cancel_resume: N/A; Todo 1 has no resumable operation or persisted workflow.
+- flaky_tests: N/A; Gradle reports no test sources, and the deterministic compile/startup commands each completed once successfully.
+- repeated_interruptions: N/A; no interruptible user workflow is introduced.
+
+Evidence gaps and risks
+- No behavioral tests exist: Gradle reports test NO-SOURCE. This does not violate Todo 1 because the approved plan explicitly limits this persistence-only stage to minimal verification and the live ddl-auto=validate startup directly checks the mapping.
+- No separate code-review report was present in the allowed Todo 1 evidence. This is a NOTE, not a blocker: this independent direct pass covers the required overfit/slop and maintenance criteria.
+- Startup depends on the already-running local PostgreSQL and Kafka containers. Both were healthy during verification; this check does not prove behavior on a fresh database, but Todo 1 requires validation against the existing V1 migration.
+
+Cleanup receipt
+- The bootRun process exited by itself with exit 0 and logged JPA/Hikari shutdown.
+- `jps -lv | rg 'ChargingApplication|GradleWrapperMain.*bootRun' || true` returned no matches; `ps -p 76607 -o pid=,command= || true` also returned no process.
+- `docker compose ps --format json` showed evcharging-postgres and evcharging-kafka still running and healthy. No Docker Compose service was started, stopped, or restarted.
+- No production, test, migration, config, task, or plan file was edited by this verifier.
+
+Recommendation
+- APPROVE Todo 1. No blocker is tied to a stated acceptance criterion.
