@@ -1,0 +1,1 @@
+boot-second bounded exit=143 app_pid=44793 gradle_pid=44780

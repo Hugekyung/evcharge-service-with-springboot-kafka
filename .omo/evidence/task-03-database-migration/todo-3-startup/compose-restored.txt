@@ -1,0 +1,3 @@
+NAME                  IMAGE                COMMAND                  SERVICE    CREATED       STATUS                   PORTS
+evcharging-kafka      apache/kafka:3.9.0   "/__cacert_entrypoin…"   kafka      4 hours ago   Up 3 hours (healthy)     0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+evcharging-postgres   postgres:16-alpine   "docker-entrypoint.s…"   postgres   4 hours ago   Up 5 seconds (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp

@@ -10,12 +10,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     open-in-view: false
 
   flyway:
     enabled: true
     baseline-on-migrate: true
+    validate-migration-naming: true
 
   kafka:
     bootstrap-servers: localhost:9092

@@ -1,0 +1,66 @@
+AdversarialVerify
+verdict: confirmed
+scope: Todo 1 only — src/main/resources/db/migration/V1__create_charging_tables.sql
+reviewed_at: 2026-08-13 Asia/Seoul
+
+Inputs inspected
+- AGENTS.md (full project rules)
+- docs/PRD.md:258-293 (exact two-table schema)
+- .omo/plans/task-03-database-migration.md (full plan and dependency matrix)
+- src/main/resources/db/migration/V1__create_charging_tables.sql
+- .omo/evidence/task-03-database-migration/todo-1-schema.txt (treated as untrusted)
+- git status --short and migration diff
+- remove-ai-slops/SKILL.md and programming/SKILL.md review criteria
+
+Independent commands and results
+1. `git status --short`
+   Result: shared worktree has modified application.yml plus untracked .omo/ and db/ paths. Only V1 migration is attributable to Todo 1; application.yml is explicitly Todo 2.
+2. `git diff --check`
+   Result: exit 0, no whitespace errors.
+3. DDL enumeration with `rg -n '^(CREATE TABLE|CREATE (UNIQUE )?INDEX|ALTER TABLE|INSERT|UPDATE|DELETE|CREATE TRIGGER|CREATE (OR REPLACE )?FUNCTION)' V1...sql`
+   Result: lines 1 and 16 are CREATE TABLE; line 30 is CREATE INDEX; no other explicit DDL/DML. Pure nonblank/noncomment LOC: 29.
+4. Fresh database: todo1_adv_20260813_01. PostgreSQL container was already healthy; no service lifecycle or volume mutation performed.
+5. RED catalog query before migration:
+   `SELECT count(*) = 0 ... table_name IN ('charging_session','charging_event')`
+   Result: `t`.
+6. Exact manual-QA migration command:
+   `docker compose exec -T postgres psql -X -v ON_ERROR_STOP=1 -U evcharging -d todo1_adv_20260813_01 -f - < src/main/resources/db/migration/V1__create_charging_tables.sql`
+   Result: exit 0; `CREATE TABLE`, `CREATE TABLE`, `CREATE INDEX`.
+7. information_schema.columns catalog query:
+   Result: exactly 21 rows. charging_session has 11 and charging_event has 10; exact PRD order, types, nullability; both charged_kwh fields are numeric precision 12 scale 3; BIGSERIAL id defaults use nextval.
+8. pg_constraint catalog query:
+   Result: exactly 4 constraints: charging_session_pkey, charging_event_pkey, uk_charging_session_session_id, uk_charging_event_event_id. Types are two `p` and two `u`; no foreign/check constraints.
+9. pg_indexes catalog query:
+   Result: exactly 5 indexes: two PK indexes, two unique-constraint indexes, and `idx_charging_event_session_sequence`; composite definition exactly `CREATE INDEX idx_charging_event_session_sequence ON public.charging_event USING btree (session_id, sequence)`.
+10. Error-propagating binary assertion (`set -euo pipefail`, psql ON_ERROR_STOP, exact shell equality):
+    Result: `binary_assertion=1|1|1|1|1`, exit 0. Booleans cover exact columns, exact constraint classes/count, named uniques, exact index count, exact composite definition.
+11. Cleanup:
+    `DROP DATABASE todo1_adv_20260813_01` then catalog query.
+    Result: DROP DATABASE; `cleanup_catalog_count=0`. Only the uniquely named disposable database was dropped.
+
+Review notes
+- The first independent catalog-display command used `ORDER BY relation::text` and exited nonzero because PostgreSQL did not resolve the select alias there. This was reviewer-query error after V1 had applied, not a migration failure. The corrected command used `ORDER BY conrelid::regclass::text`; all assertions then passed with strict error propagation.
+- remove-ai-slops direct pass: no useless/deletion-only/tautological/implementation-mirroring tests, production extraction, parsing, normalization, comments, dead code, defensive branches, abstraction, or duplication exist in this 29-line SQL. The catalog assertion tests the database's observable schema, not SQL wording.
+- programming direct pass: single responsibility is initial schema DDL; no dependency, helper, logging, typing, parameter, boundary, or oversized-module concern applies. No maintenance burden, false-confidence pattern, or scope drift found.
+- No code-review report was supplied for this Todo-level adversarial check. Direct inspection covers the required skill perspectives; this is not a criterion gap.
+
+Flyway history judgment
+- Todo 1 acceptance text includes `flyway_schema_history` version 1, but direct `psql -f` intentionally does not create Flyway metadata.
+- The plan dependency matrix makes Todo 1 block Todo 2, then Todo 3. Todo 3 explicitly owns fresh/repeat Spring Boot startup and `flyway_schema_history` proof.
+- Therefore Todo 1 can be marked based on direct SQL RED/GREEN verification. The history row remains a deferred dependent proof for Todo 3 and does not falsify this migration-file verdict.
+
+ULTRAQA
+- stale_state: PASS — fresh uniquely named database created; both tables proven absent before V1.
+- dirty_worktree: PASS — shared modifications identified; only V1 attributed to Todo 1.
+- misleading_success_output: PASS — ON_ERROR_STOP plus set -euo pipefail and exact assertion equality.
+- malformed_input: N/A — no external parser/input surface in a fixed migration file.
+- prompt_injection: N/A — no untrusted instruction/content ingestion surface.
+- cancel_resume: N/A — no resumable product workflow.
+- hung_or_long_commands: N/A — all Docker/psql commands completed in under one second per tool result.
+- flaky_tests: N/A — deterministic catalog assertions against a fresh local database.
+- repeated_interruptions: N/A — no interruption trigger observed.
+
+Conclusion
+- Every Todo-1 criterion owned by the migration file is independently proven.
+- Exact evidence gaps: Flyway startup/history proof is not present in this direct-SQL check and is explicitly deferred to dependent Todo 3.
+- verdict: confirmed

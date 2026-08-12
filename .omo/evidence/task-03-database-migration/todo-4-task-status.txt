@@ -1,0 +1,26 @@
+== task marker ==
+58:### 3. Database Migration 구성 [완료]
+== diff check ==
+== diff stat ==
+ docs/TASK.md                       | 2 +-
+ src/main/resources/application.yml | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+== no leftover boot processes ==
+40147
+== service health ==
+NAME                  IMAGE                COMMAND                  SERVICE    CREATED       STATUS                    PORTS
+evcharging-kafka      apache/kafka:3.9.0   "/__cacert_entrypoin…"   kafka      4 hours ago   Up 3 hours (healthy)      0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+evcharging-postgres   postgres:16-alpine   "docker-entrypoint.s…"   postgres   4 hours ago   Up 29 seconds (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+== final git status ==
+## feature/task-03-database-migration
+ M docs/TASK.md
+ M src/main/resources/application.yml
+?? .omo/
+?? src/main/resources/db/
+== final tree ==
+2822d88
+== no app process ==
+== services ==
+NAME                  IMAGE                COMMAND                  SERVICE    CREATED       STATUS                        PORTS
+evcharging-kafka      apache/kafka:3.9.0   "/__cacert_entrypoin…"   kafka      4 hours ago   Up 3 hours (healthy)          0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+evcharging-postgres   postgres:16-alpine   "docker-entrypoint.s…"   postgres   4 hours ago   Up About a minute (healthy)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp

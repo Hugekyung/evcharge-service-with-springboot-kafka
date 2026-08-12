@@ -1,0 +1,29 @@
+F4 independent scope-fidelity verification
+
+Exact command:
+git diff --name-only main...HEAD
+Observed: no output. HEAD is the pre-task commit, so product changes are uncommitted; working-tree inventory below is authoritative.
+
+Product allowlist observed from git status --short --untracked-files=all:
+ M docs/TASK.md
+ M src/main/resources/application.yml
+?? src/main/resources/db/migration/V1__create_charging_tables.sql
+All other untracked paths are under .omo/ workflow evidence/state.
+
+Exact forbidden-surface command:
+git diff --name-only -- docker-compose.yml build.gradle settings.gradle gradle.properties src/main/java src/test
+Observed: no output.
+
+Direct checks:
+- V1 is the only migration file and contains charging_session, charging_event, two named UNIQUE constraints, and one composite index.
+- No src/main/java, src/test, build/dependency, or docker-compose product changes.
+- application.yml diff is limited to ddl-auto=validate and validate-migration-naming=true; baseline-on-migrate remains true.
+- docs/TASK.md diff is one Task 3 completion marker.
+
+Adversarial observables:
+- dirty_worktree: PASS; complete tracked/untracked inventory captured.
+- stale_state: PASS; main...HEAD empty is explicitly reconciled with working-tree status.
+- misleading_success_output: PASS; direct diffs and file inspection used instead of prior report prose.
+
+Cleanup: read-only audit; no processes, ports, containers, volumes, or temporary files spawned.
+Verdict: confirmed / PASS.

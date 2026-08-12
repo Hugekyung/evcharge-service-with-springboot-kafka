@@ -1,0 +1,1 @@
+boot-first bounded exit=143 app_pid=44620 gradle_pid=44607

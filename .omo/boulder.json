@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "active_work_id": "task-03-database-migration",
+  "works": {
+    "task-03-database-migration": {
+      "work_id": "task-03-database-migration",
+      "active_plan": ".omo/plans/task-03-database-migration.md",
+      "plan_name": "task-03-database-migration",
+      "session_ids": ["codex:019ff541-3518-7972-9228-f505de3d851b"],
+      "status": "completed",
+      "worktree_path": "/Users/yanghaechan/orca/projects/evcharging"
+    }
+  }
+}

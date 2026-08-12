@@ -1,0 +1,2 @@
+ Container evcharging-postgres  Stopping
+ Container evcharging-postgres  Stopped

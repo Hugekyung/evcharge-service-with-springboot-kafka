@@ -1,0 +1,47 @@
+    table_name    |  column_name  |        data_type         
+------------------+---------------+--------------------------
+ charging_event   | id            | bigint
+ charging_event   | event_id      | character varying
+ charging_event   | session_id    | character varying
+ charging_event   | charger_id    | character varying
+ charging_event   | event_type    | character varying
+ charging_event   | sequence      | bigint
+ charging_event   | battery_level | integer
+ charging_event   | charged_kwh   | numeric
+ charging_event   | occurred_at   | timestamp with time zone
+ charging_event   | processed_at  | timestamp with time zone
+ charging_session | id            | bigint
+ charging_session | session_id    | character varying
+ charging_session | charger_id    | character varying
+ charging_session | status        | character varying
+ charging_session | battery_level | integer
+ charging_session | charged_kwh   | numeric
+ charging_session | last_sequence | bigint
+ charging_session | started_at    | timestamp with time zone
+ charging_session | completed_at  | timestamp with time zone
+ charging_session | created_at    | timestamp with time zone
+ charging_session | updated_at    | timestamp with time zone
+(21 rows)
+
+    table_name    |            conname             | contype |     definition      
+------------------+--------------------------------+---------+---------------------
+ charging_session | charging_session_pkey          | p       | PRIMARY KEY (id)
+ charging_session | uk_charging_session_session_id | u       | UNIQUE (session_id)
+ charging_event   | charging_event_pkey            | p       | PRIMARY KEY (id)
+ charging_event   | uk_charging_event_event_id     | u       | UNIQUE (event_id)
+(4 rows)
+
+ schemaname |    tablename     |              indexname              |                                                   indexdef                                                   
+------------+------------------+-------------------------------------+--------------------------------------------------------------------------------------------------------------
+ public     | charging_event   | charging_event_pkey                 | CREATE UNIQUE INDEX charging_event_pkey ON public.charging_event USING btree (id)
+ public     | charging_event   | idx_charging_event_session_sequence | CREATE INDEX idx_charging_event_session_sequence ON public.charging_event USING btree (session_id, sequence)
+ public     | charging_event   | uk_charging_event_event_id          | CREATE UNIQUE INDEX uk_charging_event_event_id ON public.charging_event USING btree (event_id)
+ public     | charging_session | charging_session_pkey               | CREATE UNIQUE INDEX charging_session_pkey ON public.charging_session USING btree (id)
+ public     | charging_session | uk_charging_session_session_id      | CREATE UNIQUE INDEX uk_charging_session_session_id ON public.charging_session USING btree (session_id)
+(5 rows)
+
+ flyway_v1_count 
+-----------------
+               1
+(1 row)
+
