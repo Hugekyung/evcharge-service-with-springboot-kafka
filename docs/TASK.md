@@ -12,40 +12,40 @@
 
 ## P0 - Core MVP
 
-### 1. Spring Boot 프로젝트 초기화
+### 1. Spring Boot 프로젝트 초기화 [완료]
 
-- Java 21 설정
-- Spring Boot 3.x 프로젝트 생성
-- Gradle 설정
-- 기본 패키지 구조 생성
+- [x] Java 21 설정
+- [x] Spring Boot 3.x 프로젝트 생성
+- [x] Gradle 설정
+- [x] 기본 패키지 구조 생성
 
 Dependencies:
 
-- Spring Web
-- Spring Validation
-- Spring Data JPA
-- Spring Kafka
-- PostgreSQL Driver
-- Flyway
-- Spring Boot Test
+- [x] Spring Web
+- [x] Spring Validation
+- [x] Spring Data JPA
+- [x] Spring Kafka
+- [x] PostgreSQL Driver
+- [x] Flyway
+- [x] Spring Boot Test
 
 완료 조건:
 
-./gradlew test
-./gradlew bootRun
+- [x] ./gradlew test
+- [x] ./gradlew bootRun
 
 정상 실행
 
 ⸻
 
-### 2. Docker Compose 인프라 구성
+### 2. Docker Compose 인프라 구성 [완료]
 
-- docker-compose.yml 생성
-- PostgreSQL 구성
-- Kafka 구성
-- PostgreSQL Connection 설정
-- Kafka Bootstrap Server 설정
-- application.yml 작성
+- [x] docker-compose.yml 생성
+- [x] PostgreSQL 구성
+- [x] Kafka 구성
+- [x] PostgreSQL Connection 설정
+- [x] Kafka Bootstrap Server 설정
+- [x] application.yml 작성
 
 완료 조건:
 
