@@ -48,7 +48,7 @@ approach: Implement ChargingSession first, then ChargingEvent on the single `fea
 
 - Add the two entities and two enums in the existing domain package.
 - Map every PRD field, exact table/column names, nullability, ID generation, enum representation, decimal precision/scale, and timestamp type.
-- Add focused tests that persist and reload each entity against PostgreSQL and exercise valid construction plus nullable fields.
+- Keep stage-level verification minimal: run the existing full `./gradlew test` and live Hibernate schema validation; defer persistence round-trip coverage to the dedicated testing phase.
 - Run Hibernate schema validation and `./gradlew test`; update `docs/TASK.md` Task 4 only after both entity mappings pass.
 - Work only on `feature/task-04-domain`, with ChargingSession completed before ChargingEvent.
 

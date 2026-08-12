@@ -76,14 +76,12 @@ PASS. The current branch is `feature/task-04-domain`. The product delta is exact
 ## evidenceGaps
 
 - No behavioral test sources exist; Gradle reports `NO-SOURCE`. This does not violate this task's approved mapping-only criteria, but later business behavior must not cite this run as behavioral coverage.
-- The implementation remains uncommitted, so `HEAD` and `HEAD^{tree}` identify the base commit rather than the new files. The ledger therefore binds this approval to both base SHA/tree and a SHA-256 manifest of the five reviewed product/doc files.
+- The implementation is committed at `6305faa1b2f8e6dbaf0a3193496c8031f5b74aab` on `feature/task-04-domain`; this review is bound to that PR head.
 
 ## artifactBinding
 
-- base SHA: `5eb94a4c4f3d740f4108f507dbe5a1dc7a8337ff`
-- base tree: `a659e82fc38fb8dcd53fc05eeb5a2fa9b5625eda`
-- reviewed product manifest SHA-256: `e490a29900d60fbfea8f53c4666c1a9d40b00d945b131192e5047d7f05619c6c`
-- manifest members: `docs/TASK.md`, `ChargingSession.java`, `ChargingSessionStatus.java`, `ChargingEvent.java`, `ChargingEventType.java`
+- PR head SHA: `6305faa1b2f8e6dbaf0a3193496c8031f5b74aab`
+- reviewed files: `docs/TASK.md`, `ChargingSession.java`, `ChargingSessionStatus.java`, `ChargingEvent.java`, `ChargingEventType.java`
 
 ## cleanup
 
