@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal" created-in="IU-252.23892.409">
+    <data-source name="evcharging@localhost" uuid="6183e98b-01b1-48b6-90ab-52463a3b962c">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="POSTGRES" />
+      <user-name>evcharging</user-name>
+      <schema-mapping />
+    </data-source>
+  </component>
+</project>

@@ -12,40 +12,40 @@
 
 ## P0 - Core MVP
 
-### 1. Spring Boot 프로젝트 초기화
+### 1. Spring Boot 프로젝트 초기화 [완료]
 
-- Java 21 설정
-- Spring Boot 3.x 프로젝트 생성
-- Gradle 설정
-- 기본 패키지 구조 생성
+- [x] Java 21 설정
+- [x] Spring Boot 3.x 프로젝트 생성
+- [x] Gradle 설정
+- [x] 기본 패키지 구조 생성
 
 Dependencies:
 
-- Spring Web
-- Spring Validation
-- Spring Data JPA
-- Spring Kafka
-- PostgreSQL Driver
-- Flyway
-- Spring Boot Test
+- [x] Spring Web
+- [x] Spring Validation
+- [x] Spring Data JPA
+- [x] Spring Kafka
+- [x] PostgreSQL Driver
+- [x] Flyway
+- [x] Spring Boot Test
 
 완료 조건:
 
-./gradlew test
-./gradlew bootRun
+- [x] ./gradlew test
+- [x] ./gradlew bootRun
 
 정상 실행
 
 ⸻
 
-### 2. Docker Compose 인프라 구성
+### 2. Docker Compose 인프라 구성 [완료]
 
-- docker-compose.yml 생성
-- PostgreSQL 구성
-- Kafka 구성
-- PostgreSQL Connection 설정
-- Kafka Bootstrap Server 설정
-- application.yml 작성
+- [x] docker-compose.yml 생성
+- [x] PostgreSQL 구성
+- [x] Kafka 구성
+- [x] PostgreSQL Connection 설정
+- [x] Kafka Bootstrap Server 설정
+- [x] application.yml 작성
 
 완료 조건:
 
@@ -351,6 +351,11 @@ sequence=2 상태 변경 없음
 
 - Service 단위 테스트를 먼저 촘촘하게 작성한다.
 - 상태 전이, 멱등성, 순서 역전, 종료 상태 보호, 잘못된 이벤트 입력을 검증한다.
+- Kafka 연결 실패 후 재시도 동작을 검증한다.
+- 최초 Kafka 연결 실패 시 애플리케이션이 즉시 성공 처리되지 않고 재시도하는지 검증한다.
+- 재시도 중 Kafka가 다시 연결되면 토픽 생성이 성공하고 애플리케이션이 정상 기동하는지 검증한다.
+- 최대 재시도 횟수 초과 시 애플리케이션 기동이 실패하는지 검증한다.
+- 재연결 성공 후 Kafka Listener가 시작되는지 검증한다.
 - 최종적으로 Testcontainers 기반 PostgreSQL + Kafka 통합 테스트 1개를 필수 수행한다.
 - Producer → Consumer 통합 테스트
 - Kafka → DB 통합 흐름 테스트
