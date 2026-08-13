@@ -1,0 +1,53 @@
+ installed_rank | version |      description       | success 
+----------------+---------+------------------------+---------
+              1 | 1       | create charging tables | t
+(1 row)
+
+    table_name    
+------------------
+ charging_event
+ charging_session
+(2 rows)
+
+    table_name    |  column_name  |        data_type         
+------------------+---------------+--------------------------
+ charging_event   | id            | bigint
+ charging_event   | event_id      | character varying
+ charging_event   | session_id    | character varying
+ charging_event   | charger_id    | character varying
+ charging_event   | event_type    | character varying
+ charging_event   | sequence      | bigint
+ charging_event   | battery_level | integer
+ charging_event   | charged_kwh   | numeric
+ charging_event   | occurred_at   | timestamp with time zone
+ charging_event   | processed_at  | timestamp with time zone
+ charging_session | id            | bigint
+ charging_session | session_id    | character varying
+ charging_session | charger_id    | character varying
+ charging_session | status        | character varying
+ charging_session | battery_level | integer
+ charging_session | charged_kwh   | numeric
+ charging_session | last_sequence | bigint
+ charging_session | started_at    | timestamp with time zone
+ charging_session | completed_at  | timestamp with time zone
+ charging_session | created_at    | timestamp with time zone
+ charging_session | updated_at    | timestamp with time zone
+(21 rows)
+
+    table_name    |            conname             | contype |     definition      
+------------------+--------------------------------+---------+---------------------
+ charging_session | charging_session_pkey          | p       | PRIMARY KEY (id)
+ charging_session | uk_charging_session_session_id | u       | UNIQUE (session_id)
+ charging_event   | charging_event_pkey            | p       | PRIMARY KEY (id)
+ charging_event   | uk_charging_event_event_id     | u       | UNIQUE (event_id)
+(4 rows)
+
+             index_name              |    table_name    
+-------------------------------------+------------------
+ charging_event_pkey                 | charging_event
+ uk_charging_event_event_id          | charging_event
+ idx_charging_event_session_sequence | charging_event
+ charging_session_pkey               | charging_session
+ uk_charging_session_session_id      | charging_session
+(5 rows)
+

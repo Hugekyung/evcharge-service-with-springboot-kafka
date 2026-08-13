@@ -1,0 +1,16 @@
+# F3 QA worktree inventory
+
+Explicit path/state snapshot referenced by the F3 dirty-worktree evidence.
+
+```text
+branch: feature/task-04-domain
+tracked product change: docs/TASK.md
+domain files:
+src/main/java/com/example/charging/domain/ChargingEvent.java
+src/main/java/com/example/charging/domain/ChargingEventType.java
+src/main/java/com/example/charging/domain/ChargingSession.java
+src/main/java/com/example/charging/domain/ChargingSessionStatus.java
+workflow/evidence files: .omo/
+```
+
+No credentials or runtime secrets are included.
