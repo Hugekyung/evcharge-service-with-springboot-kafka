@@ -1,0 +1,5 @@
+boot_pid=94656
+started_marker=1
+boot_exit=143
+query_creation_exception=absent
+started_line=present

@@ -1,0 +1,3 @@
+# F3 final process check
+
+No `ChargingApplication` process matched the exact process scan after bounded shutdown.

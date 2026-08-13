@@ -110,7 +110,7 @@ Entity와 DB Schema Mapping 정상 동작
 
 ⸻
 
-### 5. Repository 구현
+### 5. Repository 구현 [완료]
 
 - ChargingSessionRepository 구현
 - ChargingEventRepository 구현

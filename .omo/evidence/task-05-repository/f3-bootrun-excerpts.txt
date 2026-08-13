@@ -1,0 +1,5 @@
+20:2026-08-13T15:48:01.543+09:00  INFO 94680 --- [evcharging] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 2 JPA repository interfaces.
+29:2026-08-13T15:48:01.944+09:00  INFO 94680 --- [evcharging] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/evcharging (PostgreSQL 16.14)
+34:2026-08-13T15:48:02.061+09:00  INFO 94680 --- [evcharging] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+46:2026-08-13T15:48:02.483+09:00  INFO 94680 --- [evcharging] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+48:2026-08-13T15:48:02.730+09:00  INFO 94680 --- [evcharging] [           main] c.example.charging.ChargingApplication   : Started ChargingApplication in 1.573 seconds (process running for 1.681)

@@ -1,0 +1,5 @@
+# F3 QA worktree inventory
+
+The QA run did not edit product sources, Gradle files, Compose files, or volumes. Existing worktree state observed before/after QA included the task-05 repository files, docs/TASK.md, .omo state, and prior evidence artifacts. New QA artifacts are confined to `.omo/evidence/task-05-repository/`.
+
+Runtime cleanup: no `ChargingApplication` process remains. Compose PostgreSQL and Kafka services remain healthy. No volume deletion or recreation command was run.

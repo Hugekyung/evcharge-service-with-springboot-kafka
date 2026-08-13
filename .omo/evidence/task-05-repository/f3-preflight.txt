@@ -1,0 +1,70 @@
+=== status ===
+ M .omo/boulder.json
+ M .omo/start-work/ledger.jsonl
+ M docs/TASK.md
+?? .omo/drafts/task-05-repository.md
+?? .omo/evidence/task-05-repository-gate-review.md
+?? .omo/evidence/task-05-repository/adversarial-verify.txt
+?? .omo/evidence/task-05-repository/boot.log
+?? .omo/evidence/task-05-repository/compose-ps.log
+?? .omo/evidence/task-05-repository/compose-up.log
+?? .omo/evidence/task-05-repository/f1-plan-compliance.md
+?? .omo/evidence/task-05-repository/f2-code-quality.md
+?? .omo/evidence/task-05-repository/f3-bootrun-excerpts.txt
+?? .omo/evidence/task-05-repository/f3-bootrun-result.txt
+?? .omo/evidence/task-05-repository/f3-bootrun.log
+?? .omo/evidence/task-05-repository/f3-compose-final.txt
+?? .omo/evidence/task-05-repository/f3-compose-status.txt
+?? .omo/evidence/task-05-repository/f3-gradle-test-result.txt
+?? .omo/evidence/task-05-repository/f3-gradle-test.log
+?? .omo/evidence/task-05-repository/f3-manual-qa.md
+?? .omo/evidence/task-05-repository/f3-preflight.txt
+?? .omo/evidence/task-05-repository/f3-processes-after-boot.txt
+?? .omo/evidence/task-05-repository/f3-processes-before.txt
+?? .omo/evidence/task-05-repository/f3-processes-final.txt
+?? .omo/evidence/task-05-repository/f3-worktree-inventory.txt
+?? .omo/evidence/task-05-repository/f4-scope.md
+?? .omo/evidence/task-05-repository/git-diff-check.log
+?? .omo/evidence/task-05-repository/git-diff-check.txt
+?? .omo/evidence/task-05-repository/gradle-test.log
+?? .omo/evidence/task-05-repository/todo-1-adversarial-gate.md
+?? .omo/evidence/task-05-repository/todo-1-executor-recheck.md
+?? .omo/evidence/task-05-repository/todo-1-repository.txt
+?? .omo/plans/task-05-repository.md
+?? src/main/java/com/example/charging/repository/ChargingEventRepository.java
+?? src/main/java/com/example/charging/repository/ChargingSessionRepository.java
+=== repo files ===
+src/main/java/com/example/charging/repository/ChargingEventRepository.java
+package com.example.charging.repository;
+
+import com.example.charging.domain.ChargingEvent;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChargingEventRepository extends JpaRepository<ChargingEvent, Long> {
+
+    boolean existsByEventId(String eventId);
+
+    List<ChargingEvent> findBySessionIdOrderBySequenceAsc(String sessionId);
+}
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java
+package com.example.charging.repository;
+
+import com.example.charging.domain.ChargingSession;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Long> {
+
+    Optional<ChargingSession> findBySessionId(String sessionId);
+}
+src/main/java/com/example/charging/repository/package-info.java
+package com.example.charging.repository;
+=== task marker ===
+113:### 5. Repository 구현 [완료]
+=== exact counts ===
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java:7:public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Long> {
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java:9:    Optional<ChargingSession> findBySessionId(String sessionId);
+src/main/java/com/example/charging/repository/ChargingEventRepository.java:7:public interface ChargingEventRepository extends JpaRepository<ChargingEvent, Long> {
+src/main/java/com/example/charging/repository/ChargingEventRepository.java:9:    boolean existsByEventId(String eventId);
+src/main/java/com/example/charging/repository/ChargingEventRepository.java:11:    List<ChargingEvent> findBySessionIdOrderBySequenceAsc(String sessionId);

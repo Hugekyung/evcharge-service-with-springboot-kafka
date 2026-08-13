@@ -1,0 +1,14 @@
+=== exact repository inventory ===
+src/main/java/com/example/charging/repository/ChargingEventRepository.java
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java
+repository_file_count=2
+=== exact signatures ===
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java:7:public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Long> {
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java:9:    Optional<ChargingSession> findBySessionId(String sessionId);
+src/main/java/com/example/charging/repository/ChargingEventRepository.java:7:public interface ChargingEventRepository extends JpaRepository<ChargingEvent, Long> {
+src/main/java/com/example/charging/repository/ChargingEventRepository.java:9:    boolean existsByEventId(String eventId);
+src/main/java/com/example/charging/repository/ChargingEventRepository.java:11:    List<ChargingEvent> findBySessionIdOrderBySequenceAsc(String sessionId);
+method_counts=1,1,1
+forbidden_pattern=NONE
+=== task marker ===
+113:### 5. Repository 구현 [완료]
