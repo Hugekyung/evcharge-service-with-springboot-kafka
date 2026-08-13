@@ -1,0 +1,33 @@
+TASK 5 / TODO 1 REPOSITORY EVIDENCE
+
+Scenario: Spring Data derives the required repository queries during a real application startup.
+Invocation: docker compose up -d; bounded ./gradlew bootRun --args='--server.port=0' (60-second limit; PID 86084 cleaned by trap).
+Binary observable: PASS — boot.log contains “Found 2 JPA repository interfaces”, Flyway database connection, Hibernate ORM initialization, and “Started ChargingApplication”; it contains no QueryCreationException or repository BeanCreationException.
+Captured artifact: .omo/evidence/task-05-repository/boot.log
+
+Scenario: exact repository surface rejects missing, renamed, extra, or custom-query methods.
+Invocation: adversarial exact-signature/count/no-@Query scan.
+Binary observable: PASS — two generic declarations and exactly three required methods; no custom query annotation/SQL fragment.
+Captured artifact: .omo/evidence/task-05-repository/adversarial-verify.txt
+
+Scenario: project verification remains buildable.
+Invocation: ./gradlew test
+Binary observable: PASS (exit 0; Gradle reports no test sources, so this is build verification only).
+Captured artifact: .omo/evidence/task-05-repository/gradle-test.log
+
+Scenario: changed files contain no whitespace errors.
+Invocation: git diff --check
+Binary observable: PASS (exit 0; no output).
+Captured artifact: .omo/evidence/task-05-repository/git-diff-check.txt
+
+Scenario: intended scope is preserved.
+Invocation: git diff --name-only plus exact docs heading inspection.
+Binary observable: PASS — source additions are only ChargingSessionRepository.java and ChargingEventRepository.java; docs/TASK.md changes only Task 5 heading to [완료].
+Captured artifact: this file and adversarial-verify.txt
+
+Adversarial conditions assessed:
+- dirty_worktree: PASS — pre-existing .omo/boulder.json, .omo/drafts/task-05-repository.md, and .omo/plans/task-05-repository.md were present before editing and were preserved.
+- stale_state: PASS — HEAD feature/task-05-repository is d34226f and main is its ancestor (git merge-base --is-ancestor main HEAD exit 0).
+- misleading_success_output: PASS — accepted readiness only after independent repository-count, Flyway, Hibernate, startup-marker, and negative-error log checks; Gradle has no test sources and is labeled build-only.
+- hung_or_long: PASS — startup had a 60-second bound and cleanup trap; boot PID 86084 no longer exists; Compose services remain healthy.
+- other hazard classes: N/A — this task has no fixture, Testcontainers, external HTTP, native SQL, schema, or data mutation scope.

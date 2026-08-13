@@ -1,0 +1,24 @@
+ADVERSARIAL REPOSITORY CONTRACT VERIFICATION
+scenario: reject missing, renamed, extra, or custom repository methods
+invocation: exact source/signature scan plus negative annotation scan
+
+[session interface]
+7:public interface ChargingSessionRepository extends JpaRepository<ChargingSession, Long> {
+9:    Optional<ChargingSession> findBySessionId(String sessionId);
+PASS: exactly one ChargingSessionRepository declared method
+
+[event interface]
+7:public interface ChargingEventRepository extends JpaRepository<ChargingEvent, Long> {
+9:    boolean existsByEventId(String eventId);
+11:    List<ChargingEvent> findBySessionIdOrderBySequenceAsc(String sessionId);
+PASS: exactly two ChargingEventRepository declared methods
+
+PASS: no custom query annotation or SQL fragment
+
+[new repository source paths]
+src/main/java/com/example/charging/repository/ChargingEventRepository.java
+src/main/java/com/example/charging/repository/ChargingSessionRepository.java
+PASS: exactly two untracked repository source additions
+
+[startup negative check]
+PASS: boot log contains no repository query derivation error

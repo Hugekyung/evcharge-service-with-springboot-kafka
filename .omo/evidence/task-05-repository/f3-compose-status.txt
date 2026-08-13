@@ -1,0 +1,3 @@
+NAME                  SERVICE    STATE     STATUS
+evcharging-kafka      kafka      running   Up 18 hours (healthy)
+evcharging-postgres   postgres   running   Up 15 hours (healthy)

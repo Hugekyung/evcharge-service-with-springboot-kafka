@@ -1,0 +1,4 @@
+watchdog_pid=98166
+started_marker=absent
+repository_marker=absent
+negative_exception_scan=NONE
