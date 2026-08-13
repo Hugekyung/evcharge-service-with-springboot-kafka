@@ -14,7 +14,7 @@ approach: Implement ChargingSession first, then ChargingEvent on the single `fea
 <!-- id | outcome (one line) | status: active|deferred | evidence path -->
 | charging-session | Entity and status enum map to `charging_session` and preserve persistence-only state | active | `docs/TASK.md:73-87`, `docs/PRD.md:122-139`, `src/main/resources/db/migration/V1__create_charging_tables.sql:1-15` |
 | charging-event | Entity and event enum map to `charging_event` and preserve event history fields | active | `docs/TASK.md:89-100`, `docs/PRD.md:141-162`, `src/main/resources/db/migration/V1__create_charging_tables.sql:17-31` |
-| mapping-verification | Hibernate validation and focused persistence tests prove both mappings | active | `docs/TASK.md:107-109`, `src/main/resources/application.yml:11-19`, `AGENTS.md:570-590` |
+| mapping-verification | Hibernate schema validation and the minimal full `./gradlew test` gate prove both mappings compile and load | active | `docs/TASK.md:107-109`, `src/main/resources/application.yml:11-19`, `AGENTS.md:570-590` |
 
 ## Open assumptions (announced defaults)
 <!-- Record any default you adopt instead of asking, so the user can veto it at the gate. -->
@@ -35,6 +35,7 @@ approach: Implement ChargingSession first, then ChargingEvent on the single `fea
 - `build.gradle:20-33` already provides JPA, PostgreSQL, Flyway, and test dependencies; no dependency addition is needed for Task 4.
 - The domain package contains only `package-info.java`; no entity, enum, repository, or test convention exists to preserve.
 - Official Hibernate guidance supports `java.time` mappings, string enum persistence, identity ID generation, and `BigDecimal` for exact numeric values. Sources: https://docs.hibernate.org/orm/6.5/userguide/html_single/ and https://docs.hibernate.org/orm/6.5/introduction/html_single/.
+- No persistence round-trip test sources exist in this mapping-only task; `./gradlew test` reports `NO-SOURCE`. Round-trip coverage is intentionally deferred to the dedicated testing phase and must not be represented as completed evidence here.
 
 ## Decisions (with rationale)
 

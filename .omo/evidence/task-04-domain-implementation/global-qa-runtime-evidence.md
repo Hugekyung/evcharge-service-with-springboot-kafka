@@ -2,7 +2,7 @@
 
 Date: 2026-08-13 (Asia/Seoul)
 Branch: `feature/task-04-domain`
-HEAD: `5eb94a4c4f3d740f4108f507dbe5a1dc7a8337ff`
+HEAD: `6305faa1b2f8e6dbaf0a3193496c8031f5b74aab`
 Worktree status hash (`git status --porcelain=v1 | shasum -a 256`): `534070b31f98c201b502f2076ceac484cd02d33cf306591e02f0cbd6ba2b3c47`
 
 ## Surface 1 — Compose infrastructure
@@ -28,7 +28,7 @@ Observed startup evidence:
 
 Exact invocation: `./gradlew test --no-daemon`
 
-Observed: exit code 0, `BUILD SUCCESSFUL in 3s`; `compileTestJava NO-SOURCE`, `test NO-SOURCE`. This proves the build/test task succeeds, but there are no behavioral test cases in the current project.
+Observed: exit code 0, `BUILD SUCCESSFUL in 3s`; `compileTestJava NO-SOURCE`, `test NO-SOURCE`. This proves the build/test task succeeds, but it does not prove persistence round-trips because no behavioral test cases exist in the current project. Round-trip coverage is intentionally deferred to the dedicated testing phase; the mapping evidence here is limited to live Hibernate validation and PostgreSQL catalog inspection.
 
 ## Surface 4 — PostgreSQL catalog cross-check
 

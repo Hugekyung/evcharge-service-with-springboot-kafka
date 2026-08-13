@@ -37,9 +37,9 @@ None.
 
 ## Correctness and scope
 
-- `ChargingSession` maps every `charging_session` column with matching identity, nullability, scalar Java type, enum persistence, and numeric metadata: [ChargingSession.java](../../src/main/java/com/example/charging/domain/ChargingSession.java). `Long` plus `GenerationType.IDENTITY` matches `BIGSERIAL`; `Instant` matches `TIMESTAMPTZ`; `BigDecimal(12,3)` matches `NUMERIC(12,3)`; required sequence is primitive `long`.
-- `ChargingEvent` applies the same correct mappings for `charging_event`: [ChargingEvent.java](../../src/main/java/com/example/charging/domain/ChargingEvent.java).
-- Both enum fields use `@Enumerated(EnumType.STRING)`, preserving stable names rather than ordinal values: [ChargingSession.java](../../src/main/java/com/example/charging/domain/ChargingSession.java) and [ChargingEvent.java](../../src/main/java/com/example/charging/domain/ChargingEvent.java). Their constants exactly match the required states/events.
+- `ChargingSession` maps every `charging_session` column with matching identity, nullability, scalar Java type, enum persistence, and numeric metadata: [ChargingSession.java](../../../src/main/java/com/example/charging/domain/ChargingSession.java). `Long` plus `GenerationType.IDENTITY` matches `BIGSERIAL`; `Instant` matches `TIMESTAMPTZ`; `BigDecimal(12,3)` matches `NUMERIC(12,3)`; required sequence is primitive `long`.
+- `ChargingEvent` applies the same correct mappings for `charging_event`: [ChargingEvent.java](../../../src/main/java/com/example/charging/domain/ChargingEvent.java).
+- Both enum fields use `@Enumerated(EnumType.STRING)`, preserving stable names rather than ordinal values: [ChargingSession.java](../../../src/main/java/com/example/charging/domain/ChargingSession.java) and [ChargingEvent.java](../../../src/main/java/com/example/charging/domain/ChargingEvent.java). Their constants exactly match the required states/events.
 - Field access is consistently selected by placing `@Id` on fields, and each entity has the JPA-required protected no-argument constructor.
 - No relationship, repository, service, DTO, parser, validation, state-transition, persistence operation, or other business logic was introduced. This is exactly the constrained Task 4 surface; session IDs remain scalars as required.
 - The four domain sources are 75, 70, 6, and 7 pure LOC, respectively: all are well below the 250-LOC threshold. No unnecessary abstraction, dead code, duplicated branch, normalization, or speculative structure was found.
