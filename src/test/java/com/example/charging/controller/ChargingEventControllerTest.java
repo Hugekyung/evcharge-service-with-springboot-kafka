@@ -140,6 +140,25 @@ class ChargingEventControllerTest {
         assertThat(publisher.commands()).isEmpty();
     }
 
+    @ParameterizedTest
+    @MethodSource("controlCharacterRequests")
+    void postReturnsBadRequestWithoutPublishingWhenIdentifierContainsControlCharacter(String invalidRequest)
+            throws Exception {
+        mockMvc.perform(post("/api/v1/charging-events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest());
+
+        assertThat(publisher.commands()).isEmpty();
+    }
+
+    private static Stream<String> controlCharacterRequests() {
+        return Stream.of(
+                VALID_REQUEST.replace("evt-100001", "evt-100001\\nforged"),
+                VALID_REQUEST.replace("charger-001", "charger-001\\tforged"),
+                VALID_REQUEST.replace("session-001", "session-001\\rforged"));
+    }
+
     @Test
     void postReturnsBadRequestWithoutPublishingWhenJsonIsMalformed() throws Exception {
         // Given

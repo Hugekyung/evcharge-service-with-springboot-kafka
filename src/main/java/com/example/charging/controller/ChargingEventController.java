@@ -42,14 +42,13 @@ public class ChargingEventController {
             publisher.publish(command);
             return ResponseEntity.accepted().build();
         } catch (ChargingEventPublishException exception) {
-            log.error(
+            log.warn(
                     "Charging event publish failed: eventId={}, sessionId={}, chargerId={}, eventType={}, sequence={}",
                     command.eventId(),
                     command.sessionId(),
                     command.chargerId(),
                     command.eventType(),
-                    command.sequence(),
-                    exception);
+                    command.sequence());
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         }
     }
