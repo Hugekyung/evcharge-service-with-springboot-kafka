@@ -10,6 +10,8 @@ import com.example.charging.repository.ChargingSessionRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,9 +50,9 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ChargingEvent> getEventsBySessionId(String sessionId) {
+    public Page<ChargingEvent> getEventsBySessionId(String sessionId, Pageable pageable) {
         getBySessionId(sessionId);
-        return eventRepository.findBySessionIdOrderBySequenceAsc(sessionId);
+        return eventRepository.findBySessionId(sessionId, pageable);
     }
 
     @Override

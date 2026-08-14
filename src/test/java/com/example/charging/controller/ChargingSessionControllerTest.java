@@ -8,12 +8,16 @@ import com.example.charging.application.ChargingEventBusinessException;
 import com.example.charging.application.ChargingSessionService;
 import com.example.charging.application.ChargingSessionNotFoundException;
 import com.example.charging.domain.ChargingEvent;
+import com.example.charging.domain.ChargingEventType;
 import com.example.charging.domain.ChargingSession;
 import com.example.charging.domain.ChargingSessionStatus;
 import com.example.charging.kafka.ChargingEventMessage;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,16 +76,22 @@ class ChargingSessionControllerTest {
                 Instant.parse("2026-08-12T03:00:00Z"),
                 Instant.parse("2026-08-12T03:00:01Z"));
         service.events = List.of(ChargingEvent.create(
-                "evt-1", "session-1", "charger-1", com.example.charging.domain.ChargingEventType.CHARGING_STARTED,
+                "evt-1", "session-1", "charger-1", ChargingEventType.CHARGING_STARTED,
                 1, 55, new BigDecimal("12.500"),
                 Instant.parse("2026-08-12T03:00:00Z"),
                 Instant.parse("2026-08-12T03:00:01Z")));
 
         mockMvc.perform(get("/api/v1/charging-sessions/session-1/events"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].eventId").value("evt-1"))
-                .andExpect(jsonPath("$[0].sequence").value(1))
-                .andExpect(jsonPath("$[0].eventType").value("CHARGING_STARTED"));
+                .andExpect(jsonPath("$.content[0].eventId").value("evt-1"))
+                .andExpect(jsonPath("$.content[0].sequence").value(1))
+                .andExpect(jsonPath("$.content[0].eventType").value("CHARGING_STARTED"));
+    }
+
+    @Test
+    void rejectsPageSizeAboveMaximum() throws Exception {
+        mockMvc.perform(get("/api/v1/charging-sessions/session-1/events").param("size", "101"))
+                .andExpect(status().isBadRequest());
     }
 
     @TestConfiguration(proxyBeanMethods = false)
@@ -113,9 +123,9 @@ class ChargingSessionControllerTest {
         }
 
         @Override
-        public List<ChargingEvent> getEventsBySessionId(String sessionId) {
+        public Page<ChargingEvent> getEventsBySessionId(String sessionId, Pageable pageable) {
             getBySessionId(sessionId);
-            return events;
+            return new PageImpl<>(events, pageable, events.size());
         }
 
         void reset() {

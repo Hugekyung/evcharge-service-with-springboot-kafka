@@ -4,6 +4,8 @@ import com.example.charging.domain.ChargingEvent;
 import com.example.charging.domain.ChargingSession;
 import com.example.charging.kafka.ChargingEventMessage;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ChargingSessionService {
 
@@ -11,5 +13,5 @@ public interface ChargingSessionService {
 
     ChargingSession getBySessionId(String sessionId);
 
-    List<ChargingEvent> getEventsBySessionId(String sessionId);
+    Page<ChargingEvent> getEventsBySessionId(String sessionId, Pageable pageable);
 }
