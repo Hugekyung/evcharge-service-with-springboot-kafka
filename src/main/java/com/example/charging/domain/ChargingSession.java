@@ -54,6 +54,59 @@ public class ChargingSession {
     protected ChargingSession() {
     }
 
+    public static ChargingSession start(
+            String sessionId,
+            String chargerId,
+            long sequence,
+            Integer batteryLevel,
+            BigDecimal chargedKwh,
+            Instant occurredAt,
+            Instant now) {
+        ChargingSession session = new ChargingSession();
+        session.sessionId = sessionId;
+        session.chargerId = chargerId;
+        session.status = ChargingSessionStatus.CHARGING;
+        session.batteryLevel = batteryLevel;
+        session.chargedKwh = chargedKwh;
+        session.lastSequence = sequence;
+        session.startedAt = occurredAt;
+        session.createdAt = now;
+        session.updatedAt = now;
+        return session;
+    }
+
+    public void applyProgress(long sequence, Integer batteryLevel, BigDecimal chargedKwh, Instant now) {
+        ensureCharging();
+        updateMeasurements(sequence, batteryLevel, chargedKwh, now);
+    }
+
+    public void complete(long sequence, Integer batteryLevel, BigDecimal chargedKwh, Instant occurredAt, Instant now) {
+        ensureCharging();
+        updateMeasurements(sequence, batteryLevel, chargedKwh, now);
+        status = ChargingSessionStatus.COMPLETED;
+        completedAt = occurredAt;
+    }
+
+    public void fail(long sequence, Integer batteryLevel, BigDecimal chargedKwh, Instant occurredAt, Instant now) {
+        ensureCharging();
+        updateMeasurements(sequence, batteryLevel, chargedKwh, now);
+        status = ChargingSessionStatus.FAILED;
+        completedAt = occurredAt;
+    }
+
+    private void ensureCharging() {
+        if (status != ChargingSessionStatus.CHARGING) {
+            throw new IllegalStateException("Terminal charging session cannot transition");
+        }
+    }
+
+    private void updateMeasurements(long sequence, Integer batteryLevel, BigDecimal chargedKwh, Instant now) {
+        this.batteryLevel = batteryLevel;
+        this.chargedKwh = chargedKwh;
+        this.lastSequence = sequence;
+        this.updatedAt = now;
+    }
+
     public Long getId() {
         return id;
     }
