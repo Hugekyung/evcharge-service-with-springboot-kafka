@@ -63,7 +63,7 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
     @Transactional
     public void process(ChargingEventMessage message) {
         if (eventRepository.existsByEventId(message.eventId())) {
-            log.info(
+            log.debug(
                     "Duplicate charging event ignored: eventId={}, sessionId={}, sequence={}",
                     message.eventId(),
                     message.sessionId(),

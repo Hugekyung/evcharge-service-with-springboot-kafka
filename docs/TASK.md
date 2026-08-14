@@ -216,7 +216,7 @@ Kafka Event 처리 후 현재 Session 상태 조회 가능
 
 ⸻
 
-### 11. Event History API 구현
+### 11. Event History API 구현 [완료]
 
 Endpoint:
 
@@ -234,7 +234,7 @@ Session에 처리된 Event 목록 확인 가능
 
 ## P1 - Reliability
 
-### 12. 멱등성 구현
+### 12. 멱등성 구현 [완료]
 
 - Consumer 처리 전 eventId 존재 여부 확인
 - 이미 처리된 Event는 상태 변경하지 않음
