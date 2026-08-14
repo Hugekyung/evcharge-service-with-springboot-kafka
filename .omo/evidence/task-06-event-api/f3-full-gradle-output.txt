@@ -1,0 +1,33 @@
+Task 6 F3 full test run
+Invocation:
+./gradlew test --no-daemon
+
+First observed run:
+> Task :test
+FAILURE: Build failed with an exception.
+ FAILED
+
+* What went wrong:
+Execution failed for task ':test'.
+> A build operation failed.
+      Could not write XML test results for com.example.charging.controller.ChargingEventControllerTest to file /Users/yanghaechan/orca/projects/evcharging/build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml.
+   > Could not write XML test results for com.example.charging.controller.ChargingEventControllerTest to file /Users/yanghaechan/orca/projects/evcharging/build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml.
+
+BUILD FAILED in 4s
+
+Read-only inspection confirmed the target is a regular writable XML file. No Gradle/application test process was concurrently running. The exact same invocation was rerun:
+
+Second observed run:
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14/userguide/gradle_daemon.html#sec:disabling-the-daemon
+Daemon will be stopped at the end of the build
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+
+BUILD SUCCESSFUL in 4s
+4 actionable tasks: 1 executed, 3 up-to-date

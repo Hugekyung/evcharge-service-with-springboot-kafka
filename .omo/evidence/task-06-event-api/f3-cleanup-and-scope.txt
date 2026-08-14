@@ -1,0 +1,10 @@
+Task 6 F3 cleanup and scope check
+
+Invocation:
+printf '%s\\n' 'post-run process check:'; ps aux | rg '[C]hargingApplication|[g]radle.*test' || true; printf '%s\\n' 'worktree status (QA did not edit product files):'; git status --short
+
+Observed:
+post-run process check:
+(no ChargingApplication or Gradle test process)
+worktree status:
+Existing shared Task 6 implementation/evidence changes were present; this QA run added only files under .omo/evidence/task-06-event-api/.

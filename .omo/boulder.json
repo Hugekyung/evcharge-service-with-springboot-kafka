@@ -1,12 +1,14 @@
 {
   "schema_version": 2,
-  "active_work_id": "task-05-repository",
+  "active_work_id": "task-06-event-api",
   "works": {
-    "task-05-repository": {
-      "work_id": "task-05-repository",
-      "active_plan": ".omo/plans/task-05-repository.md",
-      "plan_name": "task-05-repository",
-      "session_ids": ["codex:019ff541-3518-7972-9228-f505de3d851b"],
+    "task-06-event-api": {
+      "work_id": "task-06-event-api",
+      "active_plan": ".omo/plans/task-06-event-api.md",
+      "plan_name": "task-06-event-api",
+      "session_ids": [
+        "codex:019ff541-3518-7972-9228-f505de3d851b"
+      ],
       "status": "completed",
       "worktree_path": "/Users/yanghaechan/orca/projects/evcharging"
     }

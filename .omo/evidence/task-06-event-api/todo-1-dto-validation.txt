@@ -1,0 +1,13 @@
+Task 6 Todo 1 — DTO and boundary validation evidence
+
+Scenario: valid PRD JSON with occurredAt="2026-08-12T12:00:00+09:00" binds at the Spring MVC boundary.
+Invocation: ./gradlew test --tests '*ChargingEventControllerTest' --tests '*ChargingEventPublisherContractTest'
+Binary observable: ChargingEventControllerTest postReturnsAcceptedWhenPublisherAcknowledges passes and asserts the publisher command occurredAt equals Instant.parse("2026-08-12T03:00:00Z").
+Artifact: build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml records 13 tests, 0 failures, 0 errors.
+
+Scenario: blank eventId, chargerId, sessionId; missing eventType or occurredAt; and sequence=0 or sequence=-1 are rejected before publishing.
+Invocation: same focused MockMvc test invocation.
+Binary observable: parameterized postReturnsBadRequestWithoutPublishingWhenRequiredFieldIsInvalid test passes eight invocations, including sequence=-1, each asserting HTTP 400 and no commands recorded by the publisher fake.
+Artifact: build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml.
+
+Implementation artifact: src/main/java/com/example/charging/controller/dto/ChargingEventRequest.java.

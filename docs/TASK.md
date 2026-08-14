@@ -124,7 +124,7 @@ Repository Test 또는 Application 실행을 통해 정상 조회 확인
 
 ⸻
 
-### 6. Charging Event API 구현
+### 6. Charging Event API 구현 [완료]
 
 Endpoint:
 

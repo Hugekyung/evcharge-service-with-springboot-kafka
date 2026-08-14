@@ -1,0 +1,9 @@
+Task 6 Todo 5 — completion marker evidence
+
+Precondition: .omo/evidence/task-06-event-api/todo-4-verification.txt is non-empty and records focused and full successful Gradle test commands.
+Scenario: mark only completed Task 6 in docs/TASK.md.
+Invocation: test -s .omo/evidence/task-06-event-api/todo-4-verification.txt && rg -n '^### 6\\. Charging Event API 구현 \\[완료\\]$' docs/TASK.md && git diff --check
+Binary observable: the command finds the exact completed Task 6 heading; git diff --check exits 0.
+Artifact: docs/TASK.md and this evidence file.
+
+No other task heading was changed.

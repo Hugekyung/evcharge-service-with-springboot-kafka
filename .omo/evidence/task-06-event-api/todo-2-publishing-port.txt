@@ -1,0 +1,13 @@
+Task 6 Todo 2 — publishing port evidence
+
+Scenario: an acknowledged publisher returns normally; a failed publisher signals ChargingEventPublishException.
+Invocation: ./gradlew test --tests '*ChargingEventControllerTest' --tests '*ChargingEventPublisherContractTest'
+Binary observable: ChargingEventPublisherContractTest has 2 tests, 0 failures, 0 errors: publishReturnsNormallyWhenBrokerAcknowledges and publishSignalsBrokerFailureWithPublishingException.
+Artifact: build/test-results/test/TEST-com.example.charging.application.ChargingEventPublisherContractTest.xml.
+
+Implementation artifacts:
+- src/main/java/com/example/charging/application/ChargingEventPublishCommand.java
+- src/main/java/com/example/charging/application/ChargingEventPublisher.java
+- src/main/java/com/example/charging/application/ChargingEventPublishException.java
+
+Scope check: these types have no repository, entity, KafkaTemplate, topic, serialization, retry-loop, or broker adapter dependency. Concrete Kafka publishing remains Task 7.

@@ -1,0 +1,20 @@
+Task 6 F3 focused MockMvc/contract test run
+Invocation:
+./gradlew test --no-daemon --tests com.example.charging.controller.ChargingEventControllerTest --tests com.example.charging.application.ChargingEventPublisherContractTest
+
+Observed output:
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14/userguide/gradle_daemon.html#sec:disabling_the_daemon
+Daemon will be stopped at the end of the build
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+
+BUILD SUCCESSFUL in 4s
+4 actionable tasks: 1 executed, 3 up-to-date
+
+Covered controller scenarios observed from the executed test class: 202 Accepted on publisher acknowledgement; 400 Bad Request for invalid required fields, unknown event type, timestamp without offset, and malformed JSON; 5xx on publisher failure. Assertions also verified no publish for validation failures.
