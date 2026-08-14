@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import com.example.charging.domain.ChargingEventType;
@@ -89,6 +90,23 @@ class ChargingSessionServiceImplTest {
         assertThat(session.getStatus()).isEqualTo(ChargingSessionStatus.CHARGING);
         verify(sessionRepository, never()).save(any());
         verify(eventRepository).save(any());
+    }
+
+    @Test
+    void keepsHighestSequenceWhenEventsArriveOutOfOrder() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
+        when(eventRepository.existsByEventId(any())).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        service.process(message("evt-1", ChargingEventType.CHARGING_STARTED, 1));
+        service.process(message("evt-3", ChargingEventType.CHARGING_PROGRESS, 3));
+        service.process(message("evt-2", ChargingEventType.CHARGING_PROGRESS, 2));
+
+        assertThat(session.getLastSequence()).isEqualTo(3);
+        assertThat(session.getBatteryLevel()).isEqualTo(40);
+        verify(sessionRepository, times(1)).save(session);
+        verify(eventRepository, times(3)).save(any());
     }
 
     @Test
