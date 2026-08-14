@@ -162,7 +162,7 @@ POST /api/v1/charging-events
 
 ⸻
 
-### 8. Kafka Consumer 구현
+### 8. Kafka Consumer 구현 [완료]
 
 - ChargingEventConsumer 구현
 - @KafkaListener 적용
@@ -176,7 +176,7 @@ Producer에서 전송한 Event를 Consumer가 정상적으로 수신
 
 ⸻
 
-### 9. Charging Session 비즈니스 로직 구현
+### 9. Charging Session 비즈니스 로직 구현 [완료]
 
 - ChargingSessionService 구현
 - @Transactional 적용
@@ -199,7 +199,7 @@ POST Event
 
 ⸻
 
-### 10. Session 조회 API 구현
+### 10. Session 조회 API 구현 [완료]
 
 Endpoint:
 

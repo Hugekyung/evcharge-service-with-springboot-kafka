@@ -39,6 +39,13 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ChargingSession getBySessionId(String sessionId) {
+        return sessionRepository.findBySessionId(sessionId)
+                .orElseThrow(() -> new ChargingSessionNotFoundException(sessionId));
+    }
+
+    @Override
     @Transactional
     public void process(ChargingEventMessage message) {
         if (eventRepository.existsByEventId(message.eventId())) {
