@@ -9,6 +9,8 @@ import com.example.charging.repository.ChargingEventRepository;
 import com.example.charging.repository.ChargingSessionRepository;
 import java.time.Clock;
 import java.time.Instant;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +21,14 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
     private final ChargingEventRepository eventRepository;
     private final Clock clock;
 
+    @Autowired
     public ChargingSessionServiceImpl(
             ChargingSessionRepository sessionRepository,
             ChargingEventRepository eventRepository) {
         this(sessionRepository, eventRepository, Clock.systemUTC());
     }
 
+    // 테스트용 생성자(시간 고정용)
     ChargingSessionServiceImpl(
             ChargingSessionRepository sessionRepository,
             ChargingEventRepository eventRepository,
@@ -38,7 +42,7 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
     @Transactional
     public void process(ChargingEventMessage message) {
         if (eventRepository.existsByEventId(message.eventId())) {
-            return;
+            return; // 같은 eventId가 DB에 이미 존재하면 그 즉시 종료(중복 처리 x)
         }
 
         Instant now = clock.instant();
@@ -48,7 +52,7 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
         validateCharger(session, message);
         if (session.getLastSequence() < message.sequence()) {
             applyTransition(session, message, now);
-            sessionRepository.save(session);
+            sessionRepository.save(session); // 오래된 sequence는 이력만 저장
         }
 
         eventRepository.save(ChargingEvent.create(
@@ -67,6 +71,8 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
         if (message.eventType() != ChargingEventType.CHARGING_STARTED) {
             throw new ChargingEventBusinessException("Session does not exist for event");
         }
+
+        // ChargingEventType이 CHARGING_STARTED 이면 생성
         ChargingSession session = ChargingSession.start(
                 message.sessionId(),
                 message.chargerId(),
