@@ -271,7 +271,7 @@ lastSequence=3
 
 ⸻
 
-### 14. Kafka Retry 구현
+### 14. Kafka Retry 구현 [완료]
 
 - Consumer 실패 Retry 설정
 - 총 3회 처리 시도: 최초 1회 + 재시도 2회
@@ -285,7 +285,7 @@ lastSequence=3
 
 ⸻
 
-### 15. Kafka DLT 구현
+### 15. Kafka DLT 구현 [완료]
 
 - Retry exhausted Event DLT 전달
 - DLT Handler 구현
