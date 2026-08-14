@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.math.BigDecimal;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 class ChargingEventMessageTest {
 
@@ -58,6 +59,28 @@ class ChargingEventMessageTest {
         assertThat(payload.get("batteryLevel").intValue()).isEqualTo(35);
         assertThat(payload.get("chargedKwh").isNumber()).isTrue();
         assertThat(payload.get("chargedKwh").decimalValue()).isEqualByComparingTo("12.50");
+        assertThat(payload.get("occurredAt").isTextual()).isTrue();
+        assertThat(payload.get("occurredAt").textValue()).isEqualTo("2026-08-12T03:00:00Z");
+    }
+
+    @Test
+    void configuredKafkaJsonSerializerWritesOccurredAtAsIso8601Text() throws Exception {
+        // Given
+        ChargingEventMessage message = new ChargingEventMessage(
+                "evt-100001",
+                "charger-001",
+                "session-001",
+                ChargingEventType.CHARGING_STARTED,
+                1,
+                35,
+                new BigDecimal("12.50"),
+                Instant.parse("2026-08-12T03:00:00Z"));
+        JsonSerializer<ChargingEventMessage> serializer = new JsonSerializer<>();
+
+        // When
+        JsonNode payload = objectMapper.readTree(serializer.serialize("charging-events", message));
+
+        // Then
         assertThat(payload.get("occurredAt").isTextual()).isTrue();
         assertThat(payload.get("occurredAt").textValue()).isEqualTo("2026-08-12T03:00:00Z");
     }
