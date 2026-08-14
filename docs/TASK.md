@@ -247,7 +247,7 @@ Session에 처리된 Event 목록 확인 가능
 
 ⸻
 
-### 13. Event Ordering 구현
+### 13. Event Ordering 구현 [완료]
 
 - ChargingSession lastSequence 사용
 - Event 처리 후 lastSequence 업데이트

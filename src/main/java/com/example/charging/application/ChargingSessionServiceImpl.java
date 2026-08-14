@@ -79,6 +79,13 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
         if (session.getLastSequence() < message.sequence()) {
             applyTransition(session, message, now);
             sessionRepository.save(session); // 오래된 sequence는 이력만 저장
+        } else {
+            log.debug(
+                    "Out-of-order charging event stored without state transition: eventId={}, sessionId={}, sequence={}, lastSequence={}",
+                    message.eventId(),
+                    message.sessionId(),
+                    message.sequence(),
+                    session.getLastSequence());
         }
 
         eventRepository.save(ChargingEvent.create(
