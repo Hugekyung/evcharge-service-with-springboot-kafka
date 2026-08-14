@@ -3,6 +3,7 @@ package com.example.charging.kafka;
 import com.example.charging.application.ChargingEventPublishCommand;
 import com.example.charging.application.ChargingEventPublishException;
 import com.example.charging.application.ChargingEventPublisher;
+import org.apache.kafka.common.errors.InterruptException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -34,6 +35,9 @@ public class ChargingEventProducer implements ChargingEventPublisher {
             throw new ChargingEventPublishException("Kafka event publishing failed", exception.getCause());
         } catch (TimeoutException exception) {
             throw new ChargingEventPublishException("Kafka event publishing timed out", exception);
+        } catch (InterruptException exception) {
+            Thread.currentThread().interrupt();
+            throw new ChargingEventPublishException("Kafka event publishing was interrupted", exception);
         } catch (RuntimeException exception) {
             throw new ChargingEventPublishException("Kafka event publishing failed", exception);
         }

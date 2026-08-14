@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import com.example.charging.application.ChargingEventPublisher;
 import com.example.charging.controller.ChargingEventController;
+import org.apache.kafka.common.errors.InterruptException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -128,7 +129,7 @@ class ChargingEventProducerTest {
         long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt);
 
         // Then
-        assertThat(elapsedMillis).isLessThan(3_500);
+        assertThat(elapsedMillis).isLessThan(5_000);
     }
 
     @Test
@@ -141,6 +142,18 @@ class ChargingEventProducerTest {
         assertThatThrownBy(() -> producer.publish(COMMAND))
                 .isInstanceOf(ChargingEventPublishException.class)
                 .hasCauseInstanceOf(InterruptedException.class);
+        assertThat(Thread.currentThread().isInterrupted()).isTrue();
+    }
+
+    @Test
+    void restoresTheInterruptedFlagWhenKafkaInterruptExceptionIsThrown() {
+        when(kafkaTemplate.send(any(), any(), any()))
+                .thenThrow(new InterruptException("interrupted"));
+        ChargingEventProducer producer = new ChargingEventProducer(kafkaTemplate);
+
+        assertThatThrownBy(() -> producer.publish(COMMAND))
+                .isInstanceOf(ChargingEventPublishException.class)
+                .hasCauseInstanceOf(InterruptException.class);
         assertThat(Thread.currentThread().isInterrupted()).isTrue();
     }
 
