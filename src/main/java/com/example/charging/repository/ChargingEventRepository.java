@@ -2,6 +2,8 @@ package com.example.charging.repository;
 
 import com.example.charging.domain.ChargingEvent;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChargingEventRepository extends JpaRepository<ChargingEvent, Long> {
@@ -9,4 +11,6 @@ public interface ChargingEventRepository extends JpaRepository<ChargingEvent, Lo
     boolean existsByEventId(String eventId);
 
     List<ChargingEvent> findBySessionIdOrderBySequenceAsc(String sessionId);
+
+    Page<ChargingEvent> findBySessionId(String sessionId, Pageable pageable);
 }
