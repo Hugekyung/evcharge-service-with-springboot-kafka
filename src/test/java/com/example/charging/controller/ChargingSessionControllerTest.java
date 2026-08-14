@@ -7,11 +7,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.charging.application.ChargingEventBusinessException;
 import com.example.charging.application.ChargingSessionService;
 import com.example.charging.application.ChargingSessionNotFoundException;
+import com.example.charging.domain.ChargingEvent;
 import com.example.charging.domain.ChargingSession;
 import com.example.charging.domain.ChargingSessionStatus;
 import com.example.charging.kafka.ChargingEventMessage;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,25 @@ class ChargingSessionControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void returnsEventHistoryForExistingSession() throws Exception {
+        service.session = ChargingSession.start(
+                "session-1", "charger-1", 1, 55, new BigDecimal("12.500"),
+                Instant.parse("2026-08-12T03:00:00Z"),
+                Instant.parse("2026-08-12T03:00:01Z"));
+        service.events = List.of(ChargingEvent.create(
+                "evt-1", "session-1", "charger-1", com.example.charging.domain.ChargingEventType.CHARGING_STARTED,
+                1, 55, new BigDecimal("12.500"),
+                Instant.parse("2026-08-12T03:00:00Z"),
+                Instant.parse("2026-08-12T03:00:01Z")));
+
+        mockMvc.perform(get("/api/v1/charging-sessions/session-1/events"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].eventId").value("evt-1"))
+                .andExpect(jsonPath("$[0].sequence").value(1))
+                .andExpect(jsonPath("$[0].eventType").value("CHARGING_STARTED"));
+    }
+
     @TestConfiguration(proxyBeanMethods = false)
     static class SessionServiceTestConfiguration {
 
@@ -75,6 +96,7 @@ class ChargingSessionControllerTest {
     static class RecordingSessionService implements ChargingSessionService {
 
         private ChargingSession session;
+        private List<ChargingEvent> events = List.of();
         private boolean notFound;
 
         @Override
@@ -90,8 +112,15 @@ class ChargingSessionControllerTest {
             return session;
         }
 
+        @Override
+        public List<ChargingEvent> getEventsBySessionId(String sessionId) {
+            getBySessionId(sessionId);
+            return events;
+        }
+
         void reset() {
             session = null;
+            events = List.of();
             notFound = false;
         }
     }

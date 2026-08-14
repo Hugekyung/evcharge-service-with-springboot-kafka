@@ -9,6 +9,7 @@ import com.example.charging.repository.ChargingEventRepository;
 import com.example.charging.repository.ChargingSessionRepository;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,13 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
     public ChargingSession getBySessionId(String sessionId) {
         return sessionRepository.findBySessionId(sessionId)
                 .orElseThrow(() -> new ChargingSessionNotFoundException(sessionId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ChargingEvent> getEventsBySessionId(String sessionId) {
+        getBySessionId(sessionId);
+        return eventRepository.findBySessionIdOrderBySequenceAsc(sessionId);
     }
 
     @Override
