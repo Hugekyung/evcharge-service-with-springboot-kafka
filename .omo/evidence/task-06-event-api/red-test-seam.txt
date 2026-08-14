@@ -1,0 +1,189 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+> Task :compileTestJava FAILED
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:7: error: cannot find symbol
+import com.example.charging.application.ChargingEventPublishCommand;
+                                       ^
+  symbol:   class ChargingEventPublishCommand
+  location: package com.example.charging.application
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:8: error: cannot find symbol
+import com.example.charging.application.ChargingEventPublishException;
+                                       ^
+  symbol:   class ChargingEventPublishException
+  location: package com.example.charging.application
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:9: error: cannot find symbol
+import com.example.charging.application.ChargingEventPublisher;
+                                       ^
+  symbol:   class ChargingEventPublisher
+  location: package com.example.charging.application
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:136: error: cannot find symbol
+    static final class RecordingPublisher implements ChargingEventPublisher {
+                                                     ^
+  symbol:   class ChargingEventPublisher
+  location: class ChargingEventControllerTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:138: error: cannot find symbol
+        private final List<ChargingEventPublishCommand> commands = new ArrayList<>();
+                           ^
+  symbol:   class ChargingEventPublishCommand
+  location: class RecordingPublisher
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:142: error: cannot find symbol
+        public void publish(ChargingEventPublishCommand command) {
+                            ^
+  symbol:   class ChargingEventPublishCommand
+  location: class RecordingPublisher
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:149: error: cannot find symbol
+        List<ChargingEventPublishCommand> commands() {
+             ^
+  symbol:   class ChargingEventPublishCommand
+  location: class RecordingPublisher
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:35: error: cannot find symbol
+    private ChargingEventPublishCommand command() {
+            ^
+  symbol:   class ChargingEventPublishCommand
+  location: class ChargingEventPublisherContractTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:22: error: cannot find symbol
+@WebMvcTest(ChargingEventController.class)
+            ^
+  symbol: class ChargingEventController
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:141: error: method does not override or implement a method from a supertype
+        @Override
+        ^
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:145: error: cannot find symbol
+                throw new ChargingEventPublishException("broker publish failed");
+                          ^
+  symbol:   class ChargingEventPublishException
+  location: class RecordingPublisher
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:16: error: cannot find symbol
+        ChargingEventPublisher publisher = command -> { };
+        ^
+  symbol:   class ChargingEventPublisher
+  location: class ChargingEventPublisherContractTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:17: error: cannot find symbol
+        ChargingEventPublishCommand command = command();
+        ^
+  symbol:   class ChargingEventPublishCommand
+  location: class ChargingEventPublisherContractTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:26: error: cannot find symbol
+        ChargingEventPublisher publisher = command -> {
+        ^
+  symbol:   class ChargingEventPublisher
+  location: class ChargingEventPublisherContractTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:27: error: cannot find symbol
+            throw new ChargingEventPublishException("broker publish failed");
+                      ^
+  symbol:   class ChargingEventPublishException
+  location: class ChargingEventPublisherContractTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:32: error: cannot find symbol
+                .isInstanceOf(ChargingEventPublishException.class);
+                              ^
+  symbol:   class ChargingEventPublishException
+  location: class ChargingEventPublisherContractTest
+/Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:36: error: cannot find symbol
+        return new ChargingEventPublishCommand(
+                   ^
+  symbol:   class ChargingEventPublishCommand
+  location: class ChargingEventPublisherContractTest
+17 errors
+
+[Incubating] Problems report is available at: file:///Users/yanghaechan/orca/projects/evcharging/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileTestJava'.
+> Compilation failed; see the compiler output below.
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:7: error: cannot find symbol
+  import com.example.charging.application.ChargingEventPublishCommand;
+                                         ^
+    symbol:   class ChargingEventPublishCommand
+    location: package com.example.charging.application
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:8: error: cannot find symbol
+  import com.example.charging.application.ChargingEventPublishException;
+                                         ^
+    symbol:   class ChargingEventPublishException
+    location: package com.example.charging.application
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:9: error: cannot find symbol
+  import com.example.charging.application.ChargingEventPublisher;
+                                         ^
+    symbol:   class ChargingEventPublisher
+    location: package com.example.charging.application
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:136: error: cannot find symbol
+      static final class RecordingPublisher implements ChargingEventPublisher {
+                                                       ^
+    symbol:   class ChargingEventPublisher
+    location: class ChargingEventControllerTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:138: error: cannot find symbol
+          private final List<ChargingEventPublishCommand> commands = new ArrayList<>();
+                             ^
+    symbol:   class ChargingEventPublishCommand
+    location: class RecordingPublisher
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:142: error: cannot find symbol
+          public void publish(ChargingEventPublishCommand command) {
+                              ^
+    symbol:   class ChargingEventPublishCommand
+    location: class RecordingPublisher
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:149: error: cannot find symbol
+          List<ChargingEventPublishCommand> commands() {
+               ^
+    symbol:   class ChargingEventPublishCommand
+    location: class RecordingPublisher
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:35: error: cannot find symbol
+      private ChargingEventPublishCommand command() {
+              ^
+    symbol:   class ChargingEventPublishCommand
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:145: error: cannot find symbol
+                  throw new ChargingEventPublishException("broker publish failed");
+                            ^
+    symbol:   class ChargingEventPublishException
+    location: class RecordingPublisher
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:16: error: cannot find symbol
+          ChargingEventPublisher publisher = command -> { };
+          ^
+    symbol:   class ChargingEventPublisher
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:17: error: cannot find symbol
+          ChargingEventPublishCommand command = command();
+          ^
+    symbol:   class ChargingEventPublishCommand
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:26: error: cannot find symbol
+          ChargingEventPublisher publisher = command -> {
+          ^
+    symbol:   class ChargingEventPublisher
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:27: error: cannot find symbol
+              throw new ChargingEventPublishException("broker publish failed");
+                        ^
+    symbol:   class ChargingEventPublishException
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:32: error: cannot find symbol
+                  .isInstanceOf(ChargingEventPublishException.class);
+                                ^
+    symbol:   class ChargingEventPublishException
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/application/ChargingEventPublisherContractTest.java:36: error: cannot find symbol
+          return new ChargingEventPublishCommand(
+                     ^
+    symbol:   class ChargingEventPublishCommand
+    location: class ChargingEventPublisherContractTest
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:141: error: method does not override or implement a method from a supertype
+          @Override
+          ^
+  /Users/yanghaechan/orca/projects/evcharging/src/test/java/com/example/charging/controller/ChargingEventControllerTest.java:22: error: cannot find symbol
+  @WebMvcTest(ChargingEventController.class)
+              ^
+    symbol: class ChargingEventController
+  17 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights.
+
+BUILD FAILED in 5s
+3 actionable tasks: 1 executed, 2 up-to-date
+
+EXIT_CODE=1

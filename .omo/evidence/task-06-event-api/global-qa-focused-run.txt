@@ -1,0 +1,21 @@
+Task6 global hands-on QA focused rerun
+Date: 2026-08-14 Asia/Seoul
+Invocation:
+./gradlew test --no-daemon --tests com.example.charging.controller.ChargingEventControllerTest --tests com.example.charging.application.ChargingEventPublisherContractTest
+
+Observed result:
+BUILD SUCCESSFUL in 4s
+4 actionable tasks: 1 executed, 3 up-to-date
+
+Independent JUnit XML inspection after the run:
+TEST-com.example.charging.application.ChargingEventPublisherContractTest.xml: tests=2 skipped=0 failures=0 errors=0
+TEST-com.example.charging.controller.ChargingEventControllerTest.xml: tests=13 skipped=0 failures=0 errors=0
+Focused total: 15 tests; skipped=0; failures=0; errors=0.
+
+Behavior mapped from the real MockMvc test cases:
+202: postReturnsAcceptedWhenPublisherAcknowledges
+400: invalid required fields, unknown event type, offset-less timestamp, malformed JSON; each asserts publisher.commands() is empty
+503-class: postReturns5xxWhenPublisherFails; publisher command recorded once
+
+Cleanup checks:
+No Gradle Test Executor or ChargingApplication process remained after completion (ps probe returned no matching process).

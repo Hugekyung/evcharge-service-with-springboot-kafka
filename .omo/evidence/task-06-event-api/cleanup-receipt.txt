@@ -1,0 +1,5 @@
+Task 6 test-process cleanup receipt
+
+Invocation: ps -Ao pid=,command= | rg '[g]radle|[C]hargingApplication' || true
+Observable: no Gradle test worker and no ChargingApplication process remained after focused/full verification. The only matching process was GradleDaemon PID 68010, a reusable build daemon, not a running test or application process.
+Action: no process termination performed, to avoid disrupting the shared worktree's other agents. No infrastructure was started for Task 6.

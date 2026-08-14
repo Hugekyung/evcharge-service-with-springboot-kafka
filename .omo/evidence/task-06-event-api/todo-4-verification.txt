@@ -1,0 +1,19 @@
+Task 6 Todo 4 — bounded verification evidence
+
+Focused scenario: Spring MVC controller plus publisher contract tests execute.
+Invocation: ./gradlew cleanTest test --tests '*ChargingEventControllerTest' --tests '*ChargingEventPublisherContractTest'
+Result: exit 0; BUILD SUCCESSFUL in 1s; 15 executed tests total (13 controller, 2 contract); zero failures, errors, or skips. processTestResources reports NO-SOURCE only because this project has no test resources; test classes did execute.
+Captured output: .omo/evidence/task-06-event-api/todo-3-4-focused-run.txt.
+
+Full scenario: project Gradle test suite executes.
+Invocation: ./gradlew test
+Result: exit 0; BUILD SUCCESSFUL in 1s.
+Captured output: .omo/evidence/task-06-event-api/todo-4-full-gradle-test.txt.
+
+Probe results:
+- malformed_input: PASS — focused MockMvc tests assert 400 plus zero publisher calls for required-field violations, unknown enum text, and offset-less timestamp.
+- dirty_worktree: PASS — inspected before edits; pre-existing untracked .omo draft/plan and modified .omo/boulder.json were preserved. Task files are added separately.
+- misleading_success_output: PASS — XML reports confirm named focused tests executed (15 total) with 0 failures/errors; NO-SOURCE was limited to test resources.
+- flaky_tests: PASS — focused suite rerun after fixture correction and passed; full suite then passed.
+- repeated_interruptions: PASS — no active Gradle/application process remained after verification.
+- external broker, full application boot, Testcontainers: N/A — deliberately out of Task 6; Task 7 owns concrete producer/broker acknowledgement.

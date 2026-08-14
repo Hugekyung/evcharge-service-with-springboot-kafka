@@ -1,0 +1,18 @@
+Task 6 Todo 3 — controller and error mapping evidence
+
+Scenario: broker acknowledgement through the publisher port.
+Invocation: ./gradlew cleanTest test --tests '*ChargingEventControllerTest' --tests '*ChargingEventPublisherContractTest'
+Binary observable: MockMvc test postReturnsAcceptedWhenPublisherAcknowledges returns HTTP 202 after the fake publisher returns normally and observes exactly one command.
+Artifact: build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml.
+
+Scenario: publisher failure.
+Invocation: same focused MockMvc test invocation.
+Binary observable: postReturns5xxWhenPublisherFails returns HTTP 503 and observes one publisher call.
+Artifact: build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml.
+
+Scenario: malformed input.
+Invocation: same focused MockMvc test invocation.
+Binary observable: unknown enum text and an offset-less timestamp each return HTTP 400 with zero publisher commands.
+Artifact: build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml (13 executed controller tests; 0 failures/errors/skips).
+
+Implementation artifact: src/main/java/com/example/charging/controller/ChargingEventController.java. Failure logging includes eventId, sessionId, chargerId, eventType, and sequence; it does not log the request payload. Controller imports no repository/entity type.
