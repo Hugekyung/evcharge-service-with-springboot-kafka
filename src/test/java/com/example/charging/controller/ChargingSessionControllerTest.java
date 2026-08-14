@@ -85,7 +85,13 @@ class ChargingSessionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].eventId").value("evt-1"))
                 .andExpect(jsonPath("$.content[0].sequence").value(1))
-                .andExpect(jsonPath("$.content[0].eventType").value("CHARGING_STARTED"));
+                .andExpect(jsonPath("$.content[0].eventType").value("CHARGING_STARTED"))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.size").value(20))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andExpect(jsonPath("$.first").doesNotExist())
+                .andExpect(jsonPath("$.last").doesNotExist());
     }
 
     @Test

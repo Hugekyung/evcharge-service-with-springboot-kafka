@@ -2,6 +2,7 @@ package com.example.charging.controller;
 
 import com.example.charging.application.ChargingSessionService;
 import com.example.charging.controller.dto.ChargingEventResponse;
+import com.example.charging.controller.dto.ChargingEventHistoryResponse;
 import com.example.charging.controller.dto.ChargingSessionResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ public class ChargingSessionController {
     }
 
     @GetMapping("/{sessionId}/events")
-    public ResponseEntity<Page<ChargingEventResponse>> getEvents(
+    public ResponseEntity<ChargingEventHistoryResponse> getEvents(
             @PathVariable String sessionId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
@@ -41,6 +42,11 @@ public class ChargingSessionController {
                         sessionId,
                         PageRequest.of(page, size, Sort.by("sequence").ascending()))
                 .map(ChargingEventResponse::from);
-        return ResponseEntity.ok(events);
+        return ResponseEntity.ok(new ChargingEventHistoryResponse(
+                events.getContent(),
+                events.getNumber(),
+                events.getSize(),
+                events.getTotalElements(),
+                events.hasNext()));
     }
 }
