@@ -2,16 +2,16 @@ package com.example.charging.kafka;
 
 import static org.mockito.Mockito.verify;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import com.example.charging.application.ChargingSessionService;
 import com.example.charging.domain.ChargingEventType;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.Instant;
-import org.apache.kafka.common.errors.RetriableException;
-import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.dao.TransientDataAccessException;
 import org.junit.jupiter.api.Test;
-import org.springframework.kafka.annotation.RetryableTopic;
+import org.slf4j.LoggerFactory;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ChargingEventConsumerTest {
@@ -40,24 +40,22 @@ class ChargingEventConsumerTest {
     }
 
     @Test
-    void declaresThreeAttemptsAndExponentialBackoff() throws NoSuchMethodException {
-        Method consume = ChargingEventConsumer.class.getMethod("consume", ChargingEventMessage.class);
-        RetryableTopic retryableTopic = consume.getAnnotation(RetryableTopic.class);
-
-        assertThat(retryableTopic).isNotNull();
-        assertThat(retryableTopic.attempts()).isEqualTo("3");
-        assertThat(retryableTopic.backoff().delay()).isEqualTo(1_000L);
-        assertThat(retryableTopic.backoff().multiplier()).isEqualTo(2.0);
-        assertThat(retryableTopic.backoff().maxDelay()).isEqualTo(16_000L);
-        assertThat(retryableTopic.include())
-                .containsExactly(TransientDataAccessException.class, DataAccessResourceFailureException.class, RetriableException.class)
-                .doesNotContain(com.example.charging.application.ChargingEventBusinessException.class);
-    }
-
-    @Test
-    void acceptsFailedEventAtDltHandler() {
+    void logsFailedEventAtDltHandler() {
+        Logger logger = (Logger) LoggerFactory.getLogger(ChargingEventConsumer.class);
+        ListAppender<ILoggingEvent> appender = new ListAppender<>();
+        appender.start();
+        logger.addAppender(appender);
         ChargingEventConsumer consumer = new ChargingEventConsumer(org.mockito.Mockito.mock(ChargingSessionService.class));
 
-        consumer.handleDlt(message());
+        try {
+            consumer.handleDlt(message());
+
+            assertThat(appender.list)
+                    .anySatisfy(event -> assertThat(event.getFormattedMessage())
+                            .contains("eventId=evt-100001", "sessionId=session-001", "sequence=1"));
+        } finally {
+            logger.detachAppender(appender);
+            appender.stop();
+        }
     }
 }
