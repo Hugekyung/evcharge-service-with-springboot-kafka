@@ -51,6 +51,29 @@ public class ChargingEvent {
     protected ChargingEvent() {
     }
 
+    public static ChargingEvent create(
+            String eventId,
+            String sessionId,
+            String chargerId,
+            ChargingEventType eventType,
+            long sequence,
+            Integer batteryLevel,
+            BigDecimal chargedKwh,
+            Instant occurredAt,
+            Instant processedAt) {
+        ChargingEvent event = new ChargingEvent();
+        event.eventId = eventId;
+        event.sessionId = sessionId;
+        event.chargerId = chargerId;
+        event.eventType = eventType;
+        event.sequence = sequence;
+        event.batteryLevel = batteryLevel;
+        event.chargedKwh = chargedKwh;
+        event.occurredAt = occurredAt;
+        event.processedAt = processedAt;
+        return event;
+    }
+
     public Long getId() {
         return id;
     }
