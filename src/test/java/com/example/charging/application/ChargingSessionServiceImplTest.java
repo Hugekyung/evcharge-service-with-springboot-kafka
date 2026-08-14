@@ -61,13 +61,19 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
-    void ignoresDuplicateEventId() {
-        when(eventRepository.existsByEventId("evt-1")).thenReturn(true);
+    void processesTheSameEventIdOnlyOnce() {
+        ChargingEventMessage message = message("evt-1", ChargingEventType.CHARGING_STARTED, 1);
+        when(eventRepository.existsByEventId("evt-1")).thenReturn(false, true);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.empty());
+        when(sessionRepository.save(any(ChargingSession.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        service.process(message("evt-1", ChargingEventType.CHARGING_PROGRESS, 2));
+        service.process(message);
+        service.process(message);
 
-        verify(sessionRepository, never()).findBySessionId(any());
-        verify(eventRepository, never()).save(any());
+        verify(sessionRepository).findBySessionId("session-1");
+        verify(sessionRepository).save(any(ChargingSession.class));
+        verify(eventRepository).save(any());
     }
 
     @Test

@@ -14,11 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ChargingSessionServiceImpl implements ChargingSessionService {
+
+    private static final Logger log = LoggerFactory.getLogger(ChargingSessionServiceImpl.class);
 
     private final ChargingSessionRepository sessionRepository;
     private final ChargingEventRepository eventRepository;
@@ -59,6 +63,11 @@ public class ChargingSessionServiceImpl implements ChargingSessionService {
     @Transactional
     public void process(ChargingEventMessage message) {
         if (eventRepository.existsByEventId(message.eventId())) {
+            log.debug(
+                    "Duplicate charging event ignored: eventId={}, sessionId={}, sequence={}",
+                    message.eventId(),
+                    message.sessionId(),
+                    message.sequence());
             return; // 같은 eventId가 DB에 이미 존재하면 그 즉시 종료(중복 처리 x)
         }
 
