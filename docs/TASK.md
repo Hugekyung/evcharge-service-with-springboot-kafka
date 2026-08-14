@@ -144,7 +144,7 @@ HTTP Request가 정상적으로 Controller까지 전달되고 Validation 동작
 
 ⸻
 
-### 7. Kafka Producer 구현
+### 7. Kafka Producer 구현 [완료]
 
 - ChargingEventMessage 구현
 - ChargingEventProducer 구현

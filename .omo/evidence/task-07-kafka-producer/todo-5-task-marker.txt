@@ -1,0 +1,29 @@
+Task 7 Todo 5 — completion marker verification
+
+Surface: docs/TASK.md checklist marker.
+Exact invocation:
+test -s .omo/evidence/task-07-kafka-producer/todo-1-message.txt && test -s .omo/evidence/task-07-kafka-producer/todo-2-producer.txt && test -s .omo/evidence/task-07-kafka-producer/todo-3-wiring.txt && test -s .omo/evidence/task-07-kafka-producer/todo-4-compose-smoke.txt && rg -q 'HTTP/1.1 202|session-task7-20260814175917-28786|Processed a total of 1 messages' .omo/evidence/task-07-kafka-producer/todo-4-compose-smoke.md && echo happy_precondition=PASS
+Observed: happy_precondition=PASS
+
+Negative invocation:
+if test -s .omo/evidence/task-07-kafka-producer/does-not-exist.txt; then echo negative_precondition=FAIL; exit 1; else echo negative_precondition=PASS_no_mutation; fi
+Observed: negative_precondition=PASS_no_mutation
+
+Marker invocation:
+rg -n '^### 7\\. Kafka Producer 구현 \\[완료\\]$' docs/TASK.md && git diff --check
+Observed: exact marker present; git diff --check passed.
+
+Manual QA matrix:
+- scenario T7-T5-HAPPY; criterion Task 7 Todo 5; surface docs/TASK.md; verdict PASS; artifact .omo/evidence/task-07-kafka-producer/todo-5-task-marker.txt.
+- scenario T7-T5-NEGATIVE; criterion missing smoke evidence must fail precondition; surface shell precondition; verdict PASS; absent path caused nonzero branch without marker mutation.
+- stale_state: PASS, fresh plan/evidence/marker reads.
+- misleading_success_output: PASS, exact marker regex and non-empty evidence checks.
+- dirty_worktree: PASS, only intended docs marker plus .omo evidence/plan/ledger state.
+- hung_or_long_commands: N/A, bounded local checks only.
+- flaky_tests: N/A, no timing-sensitive test run.
+- malformed_input: N/A, no external input parsing.
+- prompt_injection: N/A, no untrusted text channel.
+- cancel_resume: N/A, no resumable workflow.
+- repeated_interruptions: N/A, no interruptible process spawned.
+
+Cleanup receipt: no app, broker, port, browser, or temporary process spawned by this marker verification.

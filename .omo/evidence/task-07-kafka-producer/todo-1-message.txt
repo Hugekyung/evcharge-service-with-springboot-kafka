@@ -1,0 +1,63 @@
+Task 7 / Todo 1 evidence — dedicated Kafka message DTO
+
+Scope
+- Added only the immutable Kafka DTO and its focused unit test.
+- No producer, controller, consumer, configuration, database, or task-checklist changes.
+
+Failing-first proof
+Invocation:
+  ./gradlew test --tests '*ChargingEventMessageTest'
+Before the DTO existed, compilation failed as intended:
+  ChargingEventMessageTest.java:20: error: cannot find symbol
+  symbol: class ChargingEventMessage
+  location: class ChargingEventMessageTest
+Binary observable: Gradle exited non-zero during :compileTestJava because the required type was absent.
+
+Production shape proof
+Invocation:
+  javap -classpath build/classes/java/main com.example.charging.kafka.ChargingEventMessage
+Observable: public Java record constructor/accessors exactly expose:
+  String eventId
+  String chargerId
+  String sessionId
+  ChargingEventType eventType
+  long sequence
+  Integer batteryLevel
+  BigDecimal chargedKwh
+  Instant occurredAt
+
+Manual JSON-shape QA
+Scenario: serialize a populated ChargingEventMessage with an ISO-8601 configured Jackson mapper.
+JUnit test: serializesEveryDocumentedKafkaPayloadFieldWithItsExpectedJsonType
+Then: asserts exactly eight JSON property names (no missing or extra properties), each JSON type, and each source value:
+  eventId, chargerId, sessionId, eventType, occurredAt = string
+  sequence, batteryLevel = integral number
+  chargedKwh = number
+Binary observable: tests=1, failures=0, errors=0.
+Captured test-result artifact:
+  build/test-results/test/TEST-com.example.charging.kafka.ChargingEventMessageTest.xml
+
+Focused verification
+Invocation (actual execution forced to detect cache/misleading-success issues):
+  ./gradlew test --tests '*ChargingEventMessageTest' --rerun-tasks
+Result: BUILD SUCCESSFUL in 1s; 4 actionable tasks: 4 executed.
+Repeated invocation:
+  ./gradlew test --tests '*ChargingEventMessageTest' --rerun-tasks
+Result: BUILD SUCCESSFUL in 1s; 4 actionable tasks: 4 executed.
+
+Required probes
+- malformed_input: inspected the DTO for validation/parsing annotations and guards; none found. PASS for scope: this is an internal immutable Kafka transfer record, while external HTTP validation belongs to the existing controller boundary. No malformed-input behavior was added or claimed.
+- dirty_worktree: baseline had only .omo/boulder.json and Task 7 draft/plan changes. Final status adds only this todo's DTO, test, and this evidence directory; the pre-existing files remain untouched.
+- misleading_success_output: used --rerun-tasks twice (not an UP-TO-DATE-only result) and inspected the JUnit XML above for the actual one-test, zero-failure result.
+- flaky_tests: two forced executions both passed; no timing, network, or persistent infrastructure dependency is used.
+- other probes: N/A; no producer, broker, database, HTTP, or persistent-process behavior is in Todo 1.
+
+Static hygiene and cleanup
+Invocation: git diff --check
+Result: no whitespace errors.
+Pure LOC: ChargingEventMessage.java = 14; ChargingEventMessageTest.java = 54.
+Single responsibility: Kafka event payload.
+Boundary purity: typed record only; no untrusted parsing added.
+Variant handling / escape hatches / defensive layers / helper bloat: none introduced.
+Cleanup invocation: ./gradlew --stop
+Result: 1 Gradle daemon stopped; subsequent process probe found no GradleDaemon or bootRun process.

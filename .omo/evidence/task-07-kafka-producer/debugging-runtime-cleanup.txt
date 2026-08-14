@@ -1,0 +1,9 @@
+NAME                  IMAGE                COMMAND                  SERVICE    CREATED        STATUS                    PORTS
+evcharging-kafka      apache/kafka:3.9.0   "/__cacert_entrypoin…"   kafka      46 hours ago   Up 33 seconds (healthy)   0.0.0.0:9092->9092/tcp, [::]:9092->9092/tcp
+evcharging-postgres   postgres:16-alpine   "docker-entrypoint.s…"   postgres   46 hours ago   Up 42 hours (healthy)     0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp
+app_port=
+kafka_port=
+COMMAND     PID        USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+com.docke 99359 yanghaechan  253u  IPv6 0x71d431581e9de0f6      0t0  TCP *:9092 (LISTEN)
+head=
+0a3b2d1f9747756dea647e7773dd80ab8cc208f6

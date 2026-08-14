@@ -1,0 +1,58 @@
+AdversarialVerify: confirmed
+Scope: Task 7 Todo 1 independent verification only. No source, test, plan, ledger, producer, controller, configuration, consumer, DB, or documentation files were modified by this verifier.
+
+Acceptance verdict: PASS
+- The compiled record has exactly eight components in the required order and types:
+  String eventId, String chargerId, String sessionId, ChargingEventType eventType,
+  long sequence, Integer batteryLevel, BigDecimal chargedKwh, Instant occurredAt.
+- The directly inspected focused test asserts the exact eight-field JSON key set, each JSON type, and these values: evt-100001, charger-001, session-001, CHARGING_STARTED, 1, 35, 12.50, and 2026-08-12T03:00:00Z.
+
+Command outcomes (all completed within the command time bounds):
+1) ./gradlew test --tests '*ChargingEventMessageTest' --rerun-tasks
+   Exit: 0
+   Observable: BUILD SUCCESSFUL in 1s; 4 actionable tasks: 4 executed.
+2) javap -classpath build/classes/java/main com.example.charging.kafka.ChargingEventMessage
+   Exit: 0
+   Manual-QA observable (run immediately after command 1):
+   public final class com.example.charging.kafka.ChargingEventMessage extends java.lang.Record {
+     public com.example.charging.kafka.ChargingEventMessage(java.lang.String, java.lang.String, java.lang.String, com.example.charging.domain.ChargingEventType, long, java.lang.Integer, java.math.BigDecimal, java.time.Instant);
+     public java.lang.String eventId();
+     public java.lang.String chargerId();
+     public java.lang.String sessionId();
+     public com.example.charging.domain.ChargingEventType eventType();
+     public long sequence();
+     public java.lang.Integer batteryLevel();
+     public java.math.BigDecimal chargedKwh();
+     public java.time.Instant occurredAt();
+   }
+   Verdict: PASS — one eight-argument record constructor and precisely the eight payload accessors are present.
+3) ./gradlew test --tests '*ChargingEventMessageTest' --rerun-tasks
+   Exit: 0
+   Observable: BUILD SUCCESSFUL in 1s; 4 actionable tasks: 4 executed.
+4) sed -n '1,80p' build/test-results/test/TEST-com.example.charging.kafka.ChargingEventMessageTest.xml
+   Exit: 0
+   JUnit XML observable: <testsuite name="com.example.charging.kafka.ChargingEventMessageTest" tests="1" skipped="0" failures="0" errors="0" ...>
+   Verdict: PASS — tests=1, failures=0, errors=0.
+5) git diff --check
+   Exit: 0
+   Observable: no output.
+   Verdict: PASS.
+
+Direct test inspection:
+- Path: src/test/java/com/example/charging/kafka/ChargingEventMessageTest.java
+- `containsExactlyInAnyOrder` asserts exactly: eventId, chargerId, sessionId, eventType, sequence, batteryLevel, chargedKwh, occurredAt.
+- It asserts textual fields and exact values for eventId, chargerId, sessionId, eventType, and occurredAt; integral fields and exact values for sequence and batteryLevel; and a numeric chargedKwh equal to 12.50.
+
+UltraQA:
+- stale_state/misleading_success_output: PASS — both forced Gradle executions completed successfully and the generated JUnit XML was read directly.
+- flaky_tests: PASS — two `--rerun-tasks` executions each succeeded.
+- dirty_worktree: PASS — changed paths observed: .omo/boulder.json; .omo/start-work/ledger.jsonl; .omo/drafts/task-07-kafka-producer.md; .omo/evidence/task-07-kafka-producer/todo-1-adversarial-verify.md; .omo/evidence/task-07-kafka-producer/todo-1-adversarial-verify.txt; .omo/evidence/task-07-kafka-producer/todo-1-message.txt; .omo/plans/task-07-kafka-producer.md; src/main/java/com/example/charging/kafka/ChargingEventMessage.java; src/main/java/com/example/charging/kafka/ChargingEventProducer.java; src/test/java/com/example/charging/kafka/ChargingEventMessageTest.java; src/test/java/com/example/charging/kafka/ChargingEventProducerTest.java. The Todo 1 DTO and test are in scope; Todo 2 producer paths and other existing paths are not claimed by this verifier. No unfamiliar product path is claimed.
+- malformed_input: PASS — this internal, strongly typed Kafka transfer record intentionally adds no parser or validator; HTTP validation belongs outside this DTO.
+- hung_or_long: PASS — both Gradle commands completed in 1s and all other checks completed within bounded command waits.
+- prompt_injection: N/A — no trigger fact was present.
+- cancel_resume: N/A — no trigger fact was present.
+- repeated_interruptions: N/A — no trigger fact was present.
+
+Cleanup receipt:
+- `./gradlew --stop` exit 0: "Stopping Daemon(s)" and "1 Daemon stopped".
+- Post-cleanup process check for GradleDaemon or bootRun returned no matching process. No services or background work were launched by this verifier.

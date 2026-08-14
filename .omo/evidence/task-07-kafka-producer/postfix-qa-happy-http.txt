@@ -1,0 +1,5 @@
+Invocation: curl -sS -i --max-time 8 -X POST http://localhost:18089/api/v1/charging-events -H 'Content-Type: application/json' --data '{"eventId":"task7-postfix-qa-20260814183854-event","chargerId":"task7-postfix-charger","sessionId":"task7-postfix-session","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":"2026-08-14T12:34:56+09:00"}'
+
+HTTP/1.1 202
+Content-Length: 0
+Date: Fri, 14 Aug 2026 09:39:35 GMT

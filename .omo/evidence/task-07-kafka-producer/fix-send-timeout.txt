@@ -1,0 +1,71 @@
+Task 7 producer timeout repair evidence
+
+Scope
+- Production: src/main/java/com/example/charging/kafka/ChargingEventProducer.java
+- Configuration: src/main/resources/application.yml
+- Regression test: src/test/java/com/example/charging/kafka/ChargingEventProducerTest.java
+- No consumer, database, retry/DLT, or Compose definition changed.
+
+Root cause reproduced (red)
+Scenario: KafkaTemplate.send blocks for one second before it returns an unacknowledged future.
+Invocation:
+  ./gradlew test --tests com.example.charging.kafka.ChargingEventProducerTest
+Binary observable: FAILED, exactly one failing test:
+  keepsTheWholePublishAttemptWithinThreeSecondsWhenSendingBlocksBeforeReturningAFuture()
+  java.lang.AssertionError at ChargingEventProducerTest.java:131
+Reason: the former implementation applied get(3, SECONDS) only after send returned, so the test ran for about four seconds.
+
+Production repair
+- A monotonic three-second deadline starts before KafkaTemplate.send.
+- The future wait receives only the time left before that deadline.
+- spring.kafka.producer.properties.max.block.ms=3000 bounds Kafka producer work that occurs inside send before its future is returned.
+- InterruptedException still restores the interrupt flag and becomes ChargingEventPublishException.
+- Kafka runtime send failures, including a pre-future broker timeout, become ChargingEventPublishException and therefore the controller's HTTP 503 mapping.
+
+Focused automated scenario
+Invocation:
+  ./gradlew test --tests com.example.charging.kafka.ChargingEventProducerTest --tests com.example.charging.controller.ChargingEventControllerTest
+Binary observable: BUILD SUCCESSFUL (exit 0).
+Captured artifacts:
+  build/test-results/test/TEST-com.example.charging.kafka.ChargingEventProducerTest.xml
+  build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml
+
+Full verification scenario
+Invocation:
+  ./gradlew test --rerun-tasks --no-daemon
+Binary observable: BUILD SUCCESSFUL (exit 0; 4 executable Gradle tasks).
+Captured artifacts:
+  build/test-results/test/TEST-com.example.charging.kafka.ChargingEventProducerTest.xml
+  build/test-results/test/TEST-com.example.charging.controller.ChargingEventControllerTest.xml
+Observed XML counts:
+  ChargingEventProducerTest: tests=6, skipped=0, failures=0, errors=0
+  ChargingEventControllerTest: tests=16, skipped=0, failures=0, errors=0
+
+Live Kafka-outage HTTP scenario
+Invocation:
+  java -jar build/libs/evcharging-0.0.1-SNAPSHOT.jar --server.port=18087
+  docker compose stop kafka
+  curl -sS -D <headers> -o <body> -w 'HTTP_CODE=%{http_code} TIME_TOTAL=%{time_total}' --max-time 5 \
+    -X POST http://localhost:18087/api/v1/charging-events \
+    -H 'Content-Type: application/json' \
+    --data '{"eventId":"task7-outage-live-20260814","chargerId":"charger-task7","sessionId":"session-task7-outage-live-20260814","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":"2026-08-14T12:00:00+09:00"}'
+Binary observable:
+  HTTP_CODE=503 TIME_TOTAL=3.150482
+  CURL_EXIT=0 ELAPSED_MS=3183
+  HTTP/1.1 503
+  producer runtime configuration logged: max.block.ms = 3000
+The requested failure response completed below the approximately four-second bound.
+Captured artifact: this file (the temporary run transcript was captured here before cleanup).
+
+Cleanup scenario
+Invocation:
+  cleanup trap: terminate the Java process; docker compose start kafka; poll Kafka health.
+Binary observable after the live outage run:
+  evcharging-kafka: Up (healthy)
+  evcharging-postgres: Up (healthy)
+No Compose volumes were deleted and no app process was left running.
+
+Integrity
+Invocation:
+  git diff --check
+Binary observable: exit 0 with no whitespace errors.
