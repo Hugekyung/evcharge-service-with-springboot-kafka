@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "active_work_id": "task-06-event-api",
+  "active_work_id": "task-07-kafka-producer",
   "works": {
-    "task-06-event-api": {
-      "work_id": "task-06-event-api",
-      "active_plan": ".omo/plans/task-06-event-api.md",
-      "plan_name": "task-06-event-api",
+    "task-07-kafka-producer": {
+      "work_id": "task-07-kafka-producer",
+      "active_plan": ".omo/plans/task-07-kafka-producer.md",
+      "plan_name": "task-07-kafka-producer",
       "session_ids": [
         "codex:019ff541-3518-7972-9228-f505de3d851b"
       ],

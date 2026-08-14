@@ -1,0 +1,13 @@
+{"eventId":"task7-final-20260814183205-49757-outage-event","chargerId":"task7-final-20260814183205-49757-charger","sessionId":"task7-final-20260814183205-49757-outage-session","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676460.000000000}
+{"eventId":"task7-t4-20260814180746-32493","chargerId":"charger-task7-t4","sessionId":"session-task7-t4-20260814180746-32493","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"f3-manual-outage-20260814-1822","chargerId":"charger-f3-outage","sessionId":"session-f3-outage-20260814-1822","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676460.000000000}
+{"eventId":"task7-final-20260814183205-49757-event","chargerId":"task7-final-20260814183205-49757-charger","sessionId":"task7-final-20260814183205-49757-session","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"task7-20260814175917-28786","chargerId":"charger-task7","sessionId":"session-task7-20260814175917-28786","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"task7-failure-202608141800","chargerId":"charger-task7","sessionId":"session-task7-failure-202608141800","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"f3-manual-20260814-1822-001","chargerId":"charger-f3-manual","sessionId":"session-f3-manual-20260814-1822","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"task7-f3-20260814182602-43031","chargerId":"charger-task7","sessionId":"session-task7-f3-20260814182602-43031","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"task7-f3-20260814182713-43877","chargerId":"charger-task7","sessionId":"session-task7-f3-20260814182713-43877","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786676400.000000000}
+{"eventId":"qa-task7-success-001","chargerId":"qa-charger-001","sessionId":"qa-session-001","eventType":"CHARGING_STARTED","sequence":1,"batteryLevel":35,"chargedKwh":0,"occurredAt":1786700100.000000000}
+[2026-08-14 09:34:17,330] ERROR Error processing message, terminating consumer process:  (org.apache.kafka.tools.consumer.ConsoleConsumer)
+org.apache.kafka.common.errors.TimeoutException
+Processed a total of 10 messages

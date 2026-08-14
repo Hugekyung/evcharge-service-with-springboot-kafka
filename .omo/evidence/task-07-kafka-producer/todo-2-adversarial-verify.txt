@@ -1,0 +1,64 @@
+verdict: confirmed
+
+Task
+- Independent, read-only adversarial verification of Task 7 Todo 2: acknowledgement-gated ChargingEventProducer.
+- Product/test/config/DB/consumer/retry code was not edited by this verifier.
+
+Baseline / failing-first evidence
+- Inspected `.omo/evidence/task-07-kafka-producer/todo-2-producer.txt` directly.
+- It records the pre-implementation invocation `./gradlew test --tests '*ChargingEventProducerTest'`, a non-zero `:compileTestJava` result, and eight `cannot find symbol: class ChargingEventProducer` diagnostics.
+- Evidence gap: the raw pre-implementation console log is not retained as a separate artifact, so the historical red state cannot be rerun after the class now exists. This is not used as proof of current correctness; current correctness was independently reproduced below.
+
+Fresh automated verification
+- Exact invocation, run 1: `./gradlew test --tests '*ChargingEventProducerTest' --rerun-tasks --no-daemon`
+  Result: exit 0; `BUILD SUCCESSFUL in 4s`; compileJava, compileTestJava, and test executed; 4 actionable tasks, 4 executed.
+- Exact invocation, run 2: `./gradlew test --tests '*ChargingEventProducerTest' --rerun-tasks --no-daemon`
+  Result: exit 0; `BUILD SUCCESSFUL in 4s`; compileJava, compileTestJava, and test executed; 4 actionable tasks, 4 executed.
+- Fresh XML inspected: `build/test-results/test/TEST-com.example.charging.kafka.ChargingEventProducerTest.xml`.
+  Suite attributes: `tests="4" skipped="0" failures="0" errors="0"`.
+  Exact testcase names:
+  - `publishesMappedMessageToTheChargingEventsTopicWithTheSessionIdKey()`
+  - `translatesBrokerExecutionFailuresToPublishExceptions()`
+  - `translatesBrokerTimeoutsToPublishExceptions()`
+  - `restoresTheInterruptedFlagWhenBrokerPublishIsInterrupted()`
+- The executor's preserved XML `.omo/evidence/task-07-kafka-producer/todo-2-producer-junit.xml` was also parsed: the same four names and `tests="4" skipped="0" failures="0" errors="0"`.
+
+Source observables
+- `src/main/java/com/example/charging/kafka/ChargingEventProducer.java` is `@Component` and implements `ChargingEventPublisher`.
+- Its dependency is exactly `KafkaTemplate<String, ChargingEventMessage>` via constructor injection.
+- It sends to constant `"charging-events"`, uses `command.sessionId()` as key, and blocks for broker acknowledgement via `.get(3, TimeUnit.SECONDS)`.
+- `toMessage` explicitly maps all eight command fields in contract order: eventId, chargerId, sessionId, eventType, sequence, batteryLevel, chargedKwh, occurredAt.
+- `ExecutionException`, `TimeoutException`, and `InterruptedException` are translated to `ChargingEventPublishException`; execution failure preserves the underlying cause, timeout preserves TimeoutException, and interrupt handling calls `Thread.currentThread().interrupt()` before throwing.
+- `src/test/java/com/example/charging/kafka/ChargingEventProducerTest.java` inspects the exact topic, session key, and all-eight-field value; separately exercises execution, timeout, and interrupt paths. The timeout future records exactly 3 seconds. The interrupt test asserts the flag is restored, and `@AfterEach` clears it to prevent leakage.
+- Application contracts inspected: `ChargingEventPublishCommand`, `ChargingEventPublisher`, and `ChargingEventPublishException` align with this adapter.
+
+Static scope / slop / maintenance pass
+- Command: `rg -n "Jdbc|Repository|EntityManager|DataSource|@Transactional|while\\s*\\(|Thread\\.sleep|retry|Retry|Consumer|@KafkaListener|send\\(" <producer> <producer-test>`.
+- Result: only the intended Kafka `send` calls matched. No DB access, consumer, custom retry, loop, or sleep exists in scoped files.
+- `git status --short` shows shared Task 7 plan/evidence/DTO/producer/test work only. No consumer, retry, DB, or Kafka configuration path is modified.
+- `git diff --check`: exit 0, no whitespace errors.
+- Direct remove-ai-slops/programming pass: no useless deletion test, requested-removal-only test, tautological assertion, production-mirroring parser/normalizer, needless extraction, speculative abstraction, oversized module, dead/debug code, custom retry, or boundary violation. The KafkaTemplate mock is a narrow adapter seam and the assertions verify observable call contract and exception behavior. No criterion-blocking maintenance burden or scope drift found.
+
+Manual QA channel: terminal data surface
+- Exact required invocation was executed twice and passed.
+- XML independently proves all four required tests ran with zero failures/errors/skips.
+- Source/test inspection proves the happy path's exact topic/key/eight-field payload and the three required failure behaviors; verdict does not rely on Gradle prose alone.
+
+ULTRAQA
+- dirty_worktree: PASS. The worktree was already dirty with Task 7 shared artifacts and untracked scoped files. Nothing unfamiliar was reverted or claimed; this verifier added only this evidence file.
+- stale_state: PASS. Both fresh runs used `--rerun-tasks --no-daemon`; compile and test tasks executed rather than reporting UP-TO-DATE.
+- misleading_success_output: PASS. Fresh JUnit XML was parsed for exact counts and names, and source/test assertions were inspected independently of `BUILD SUCCESSFUL`.
+- flaky_tests: PASS. Two forced runs completed all four tests successfully. Tests use completed/custom futures with no broker, network, sleep, wall clock, or persistent state.
+- repeated_interruptions: PASS. Each forced run exercised interrupt restoration. The test asserts `isInterrupted() == true`; `@AfterEach Thread.interrupted()` clears it, and the post-run worker probe was empty.
+- malformed_input: N/A. This is an internal, statically typed application-port adapter and performs no external text/request parsing; HTTP structural validation belongs to another boundary.
+- prompt_injection: N/A. No prompt, model, free-form instruction, or tool-routing input enters this adapter.
+- cancel_resume: N/A. The contract is one bounded synchronous future wait; no resumable workflow/checkpoint state exists.
+- hung_long_command: N/A as an adversarial input class. The only potentially blocking operation is explicitly bounded to 3 seconds and its timeout path is asserted.
+
+Cleanup receipt
+- No broker, application, container, or background service was started.
+- Command: `pgrep -fal 'Gradle(TestExecutor|Test Worker)' || true`
+- Result: no output; no Gradle Test Executor or Test Worker remained.
+
+DoneClaim
+- CONFIRMED. The current adapter satisfies every stated Todo 2 contract, and two fresh forced executions reproduce the exact four-test green result. Historical red evidence is prose-only rather than a raw retained console artifact, but the recorded failure is specific and the missing raw log is not a stated success-criterion failure.

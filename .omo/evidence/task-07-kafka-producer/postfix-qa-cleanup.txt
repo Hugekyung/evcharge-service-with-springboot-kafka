@@ -1,0 +1,6 @@
+HEAD=96893e420d3e963a816a3d2c986454c1403a8f20
+docker compose ps --all:
+evcharging-kafka   Up (healthy)   0.0.0.0:9092->9092/tcp
+evcharging-postgres Up (healthy)  0.0.0.0:5432->5432/tcp
+QA app listener on TCP 18089: none
+QA-owned kafka-console-consumer: none

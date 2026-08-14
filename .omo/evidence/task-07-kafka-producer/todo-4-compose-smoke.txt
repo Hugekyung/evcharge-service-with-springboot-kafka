@@ -1,0 +1,6 @@
+Task 7 Todo 4 evidence pointer.
+
+The complete manual QA matrix and captured Compose/Kafka smoke evidence is in:
+.omo/evidence/task-07-kafka-producer/todo-4-compose-smoke.md
+
+Precondition verified: the referenced Markdown artifact is non-empty and records Compose health, fixed-port application startup, exact console-consumer invocation, HTTP 202, matching sessionId key/payload, adversarial cases, and cleanup receipt.

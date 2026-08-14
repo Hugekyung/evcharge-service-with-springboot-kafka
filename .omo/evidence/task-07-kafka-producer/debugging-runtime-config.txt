@@ -1,0 +1,66 @@
+0a3b2d1f9747756dea647e7773dd80ab8cc208f6
+---producer---
+     1	package com.example.charging.kafka;
+     2	
+     3	import com.example.charging.application.ChargingEventPublishCommand;
+     4	import com.example.charging.application.ChargingEventPublishException;
+     5	import com.example.charging.application.ChargingEventPublisher;
+     6	import java.util.concurrent.ExecutionException;
+     7	import java.util.concurrent.TimeUnit;
+     8	import java.util.concurrent.TimeoutException;
+     9	import org.springframework.kafka.core.KafkaTemplate;
+    10	import org.springframework.stereotype.Component;
+    11	
+    12	@Component
+    13	public class ChargingEventProducer implements ChargingEventPublisher {
+    14	
+    15	    private static final String TOPIC = "charging-events";
+    16	    private static final long PUBLISH_TIMEOUT_NANOS = TimeUnit.SECONDS.toNanos(3);
+    17	
+    18	    private final KafkaTemplate<String, ChargingEventMessage> kafkaTemplate;
+    19	
+    20	    public ChargingEventProducer(KafkaTemplate<String, ChargingEventMessage> kafkaTemplate) {
+    21	        this.kafkaTemplate = kafkaTemplate;
+    22	    }
+    23	
+    24	    @Override
+    25	    public void publish(ChargingEventPublishCommand command) {
+    26	        long deadline = System.nanoTime() + PUBLISH_TIMEOUT_NANOS;
+    27	        try {
+    28	            kafkaTemplate.send(TOPIC, command.sessionId(), toMessage(command))
+    29	                    .get(remainingNanos(deadline), TimeUnit.NANOSECONDS);
+    30	        } catch (InterruptedException exception) {
+    31	            Thread.currentThread().interrupt();
+    32	            throw new ChargingEventPublishException("Kafka event publishing was interrupted", exception);
+    33	        } catch (ExecutionException exception) {
+    34	            throw new ChargingEventPublishException("Kafka event publishing failed", exception.getCause());
+    35	        } catch (TimeoutException exception) {
+    36	            throw new ChargingEventPublishException("Kafka event publishing timed out", exception);
+    37	        } catch (RuntimeException exception) {
+    38	            throw new ChargingEventPublishException("Kafka event publishing failed", exception);
+    39	        }
+    40	    }
+    41	
+    42	    private long remainingNanos(long deadline) throws TimeoutException {
+    43	        long remainingNanos = deadline - System.nanoTime();
+    44	        if (remainingNanos <= 0) {
+    45	            throw new TimeoutException("Kafka event publishing timed out");
+    46	        }
+    47	        return remainingNanos;
+    48	    }
+    49	
+    50	    private ChargingEventMessage toMessage(ChargingEventPublishCommand command) {
+    51	        return new ChargingEventMessage(
+    52	                command.eventId(),
+    53	                command.chargerId(),
+    54	                command.sessionId(),
+    55	                command.eventType(),
+    56	                command.sequence(),
+    57	                command.batteryLevel(),
+    58	                command.chargedKwh(),
+    59	                command.occurredAt());
+    60	    }
+    61	}
+---application.yml---
+22:    bootstrap-servers: localhost:9092
+29:        max.block.ms: 3000

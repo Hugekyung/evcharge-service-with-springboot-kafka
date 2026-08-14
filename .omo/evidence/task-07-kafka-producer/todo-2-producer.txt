@@ -1,0 +1,70 @@
+Task 7 / Todo 2 evidence — concrete Kafka producer adapter
+
+Scope
+- Added src/main/java/com/example/charging/kafka/ChargingEventProducer.java.
+- Added src/test/java/com/example/charging/kafka/ChargingEventProducerTest.java.
+- No consumer, database, retry, or Kafka configuration file was changed.
+
+Failing-first seam proof
+Invocation:
+  ./gradlew test --tests '*ChargingEventProducerTest'
+Before the producer existed, :compileTestJava failed with eight expected occurrences of:
+  error: cannot find symbol
+  symbol: class ChargingEventProducer
+Binary observable: Gradle exited non-zero because the test's required production adapter type was absent, not because of a test fixture or dependency failure.
+
+Focused verification
+Invocation 1:
+  ./gradlew test --tests '*ChargingEventProducerTest' --rerun-tasks
+Result: exit 0; BUILD SUCCESSFUL in 1s; 4 actionable tasks, 4 executed.
+Invocation 2 (flaky-test probe):
+  ./gradlew test --tests '*ChargingEventProducerTest' --rerun-tasks
+Result: exit 0; BUILD SUCCESSFUL in 1s; 4 actionable tasks, 4 executed.
+Captured artifact:
+  .omo/evidence/task-07-kafka-producer/todo-2-producer-junit.xml
+Source artifact at capture time:
+  build/test-results/test/TEST-com.example.charging.kafka.ChargingEventProducerTest.xml
+Exact XML attributes after invocation 2:
+  tests="4" skipped="0" failures="0" errors="0"
+Executed testcases:
+  publishesMappedMessageToTheChargingEventsTopicWithTheSessionIdKey()
+  translatesBrokerExecutionFailuresToPublishExceptions()
+  translatesBrokerTimeoutsToPublishExceptions()
+  restoresTheInterruptedFlagWhenBrokerPublishIsInterrupted()
+
+Manual QA through focused producer assertions
+Scenario: acknowledged broker publish.
+Invocation: publishesMappedMessageToTheChargingEventsTopicWithTheSessionIdKey().
+Binary observable: verifies KafkaTemplate.send receives the exact topic "charging-events", COMMAND.sessionId() as key, and a ChargingEventMessage whose eight fields equal the command fields. The completed future returns normally.
+Artifact: .omo/evidence/task-07-kafka-producer/todo-2-producer-junit.xml.
+
+Scenario: broker send future completes exceptionally.
+Invocation: translatesBrokerExecutionFailuresToPublishExceptions().
+Binary observable: a real failed CompletableFuture produces ExecutionException from get; producer throws ChargingEventPublishException and preserves the IllegalStateException root cause.
+Artifact: .omo/evidence/task-07-kafka-producer/todo-2-producer-junit.xml.
+
+Scenario: broker acknowledgement times out.
+Invocation: translatesBrokerTimeoutsToPublishExceptions().
+Binary observable: producer throws ChargingEventPublishException with TimeoutException cause; the test future records exactly timeout=3 and unit=TimeUnit.SECONDS.
+Artifact: .omo/evidence/task-07-kafka-producer/todo-2-producer-junit.xml.
+
+Scenario: wait is interrupted.
+Invocation: restoresTheInterruptedFlagWhenBrokerPublishIsInterrupted().
+Binary observable: producer throws ChargingEventPublishException with InterruptedException cause and Thread.currentThread().isInterrupted() is true. @AfterEach clears the flag so it cannot leak into another test.
+Artifact: .omo/evidence/task-07-kafka-producer/todo-2-producer-junit.xml.
+
+Required probes
+- malformed_input: N/A by scope. This internal typed publisher adapter neither parses nor validates external input; HTTP boundary validation remains outside this Todo.
+- dirty_worktree: PASS. Baseline was already dirty with Task 7 plan/ledger/draft and Todo 1 untracked files. Final status adds only ChargingEventProducer.java, ChargingEventProducerTest.java, and this evidence file within this Todo's scope; nothing unfamiliar was reverted.
+- stale_state: PASS. Both commands used --rerun-tasks, forcing compile and test rather than accepting an UP-TO-DATE result.
+- misleading_success_output: PASS. The verdict uses the non-empty JUnit XML and its exact four-test/zero-failure counts, not Gradle success text alone.
+- flaky_tests: PASS. Both forced executions ran all four testcases and passed; they use completed/custom futures only, with no broker, network, clock, sleep, or persistent infrastructure dependency.
+- repeated_interruptions: PASS. The interruption scenario ran in both forced executions, asserts restoration of the interrupt flag, and @AfterEach clears it after every test.
+
+Static and process hygiene
+Invocation: git diff --check
+Result: exit 0; no whitespace errors.
+Direct source observable: ChargingEventProducer is @Component, implements ChargingEventPublisher, uses KafkaTemplate<String, ChargingEventMessage>, calls send(TOPIC, command.sessionId(), toMessage(command)).get(3, TimeUnit.SECONDS), and explicitly handles InterruptedException, ExecutionException, and TimeoutException.
+Pure LOC: ChargingEventProducer.java = 41; ChargingEventProducerTest.java = 106; both below the 250-line limit.
+Cleanup probe: pgrep -fal 'Gradle(TestExecutor|Test Worker)' || true
+Result: no matching test process. No broker, application, or container process was started for this internal adapter test.

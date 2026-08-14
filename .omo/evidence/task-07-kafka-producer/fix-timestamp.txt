@@ -1,0 +1,44 @@
+Kafka occurredAt wire-format fix evidence
+
+Scenario
+  ChargingEventMessage.occurredAt = Instant.parse("2026-08-12T03:00:00Z")
+  Serializer under test = org.springframework.kafka.support.serializer.JsonSerializer
+  Expected Kafka JSON field = textual ISO-8601 value "2026-08-12T03:00:00Z"
+
+Red test (before production fix)
+  Invocation:
+    ./gradlew test --tests com.example.charging.kafka.ChargingEventMessageTest.configuredKafkaJsonSerializerWritesOccurredAtAsIso8601Text
+  Binary observable:
+    exit code 1
+    ChargingEventMessageTest > configuredKafkaJsonSerializerWritesOccurredAtAsIso8601Text() FAILED
+    BUILD FAILED
+  This exercised the actual Spring Kafka JsonSerializer, not only a separately configured ObjectMapper.
+
+Production/test fix
+  src/main/java/com/example/charging/kafka/ChargingEventMessage.java
+    Annotated the Instant record component with
+    @JsonFormat(shape = JsonFormat.Shape.STRING).
+  src/test/java/com/example/charging/kafka/ChargingEventMessageTest.java
+    Added the focused JsonSerializer serialization assertion.
+
+Green focused test
+  Invocation:
+    ./gradlew test --tests com.example.charging.kafka.ChargingEventMessageTest.configuredKafkaJsonSerializerWritesOccurredAtAsIso8601Text
+  Binary observable:
+    exit code 0
+    1 test completed, 0 failed
+    BUILD SUCCESSFUL
+  Assertion observed:
+    payload.occurredAt.isTextual() == true
+    payload.occurredAt.textValue() == "2026-08-12T03:00:00Z"
+
+Full regression suite
+  Invocation:
+    ./gradlew test
+  Binary observable:
+    exit code 0
+    BUILD SUCCESSFUL in 5s
+    4 actionable tasks: 1 executed, 3 up-to-date
+
+Evidence artifact
+  This file: .omo/evidence/task-07-kafka-producer/fix-timestamp.txt
