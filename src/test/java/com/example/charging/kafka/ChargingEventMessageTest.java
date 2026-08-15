@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.math.BigDecimal;
 import java.time.Instant;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -18,6 +19,7 @@ class ChargingEventMessageTest {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Test
+    @DisplayName("Kafka 메시지의 모든 필드를 문서화된 JSON 타입으로 직렬화한다")
     void serializesEveryDocumentedKafkaPayloadFieldWithItsExpectedJsonType() throws Exception {
         // Given
         ChargingEventMessage message = new ChargingEventMessage(
@@ -64,6 +66,7 @@ class ChargingEventMessageTest {
     }
 
     @Test
+    @DisplayName("Kafka JsonSerializer가 occurredAt을 ISO-8601 문자열로 직렬화한다")
     void configuredKafkaJsonSerializerWritesOccurredAtAsIso8601Text() throws Exception {
         // Given
         ChargingEventMessage message = new ChargingEventMessage(

@@ -22,6 +22,7 @@ import com.example.charging.application.ChargingEventPublisher;
 import com.example.charging.controller.ChargingEventController;
 import org.apache.kafka.common.errors.InterruptException;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -57,6 +58,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("Session ID를 Kafka key로 사용해 charging-events 토픽에 메시지를 발행한다")
     void publishesMappedMessageToTheChargingEventsTopicWithTheSessionIdKey() throws Exception {
         // Given
         CompletableFuture<SendResult<String, ChargingEventMessage>> future = CompletableFuture.completedFuture(null);
@@ -82,6 +84,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("브로커 실행 오류를 발행 예외로 변환한다")
     void translatesBrokerExecutionFailuresToPublishExceptions() throws Exception {
         // Given
         when(kafkaTemplate.send(any(), any(), any()))
@@ -95,6 +98,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("브로커 응답 timeout을 발행 예외로 변환한다")
     void translatesBrokerTimeoutsToPublishExceptions() throws Exception {
         // Given
         TimeoutFuture<SendResult<String, ChargingEventMessage>> future = new TimeoutFuture<>();
@@ -110,6 +114,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("KafkaTemplate send가 지연되어도 전체 발행 시도는 3초 안에 종료된다")
     void keepsTheWholePublishAttemptWithinThreeSecondsWhenSendingBlocksBeforeReturningAFuture() throws Exception {
         // Given
         CountDownLatch sendReturnDelay = new CountDownLatch(1);
@@ -133,6 +138,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("발행 중단 시 현재 스레드의 interrupt 상태를 복구한다")
     void restoresTheInterruptedFlagWhenBrokerPublishIsInterrupted() throws Exception {
         // Given
         when(kafkaTemplate.send(any(), any(), any())).thenReturn(new InterruptedFuture<>());
@@ -146,6 +152,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("Kafka InterruptException 발생 시 현재 스레드의 interrupt 상태를 복구한다")
     void restoresTheInterruptedFlagWhenKafkaInterruptExceptionIsThrown() {
         when(kafkaTemplate.send(any(), any(), any()))
                 .thenThrow(new InterruptException("interrupted"));
@@ -158,6 +165,7 @@ class ChargingEventProducerTest {
     }
 
     @Test
+    @DisplayName("KafkaTemplate이 제공되면 실제 Publisher를 Controller에 주입한다")
     void wiresTheSoleProductionPublisherIntoTheControllerWhenKafkaTemplateIsSupplied() {
         // Given
         ApplicationContextRunner contextRunner = new ApplicationContextRunner()
