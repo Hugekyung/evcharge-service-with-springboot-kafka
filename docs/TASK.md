@@ -387,7 +387,7 @@ sequence=2 상태 변경 없음
 
 P0/P1이 모두 완료된 경우에만 수행한다.
 
-### 21. 운영성 개선
+### 21. 운영성 개선 [완료]
 
 - Spring Boot Actuator
 - Health Check
