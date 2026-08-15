@@ -9,6 +9,7 @@ import com.example.charging.application.ChargingSessionService;
 import com.example.charging.domain.ChargingEventType;
 import java.math.BigDecimal;
 import java.time.Instant;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ class ChargingEventConsumerTest {
     }
 
     @Test
+    @DisplayName("수신한 이벤트를 ChargingSessionService에 위임한다")
     void delegatesReceivedMessageToChargingSessionService() {
         ChargingSessionService service = org.mockito.Mockito.mock(ChargingSessionService.class);
         ChargingEventConsumer consumer = new ChargingEventConsumer(service);
@@ -40,6 +42,7 @@ class ChargingEventConsumerTest {
     }
 
     @Test
+    @DisplayName("DLT 이벤트의 핵심 식별 정보를 로그로 남긴다")
     void logsFailedEventAtDltHandler() {
         Logger logger = (Logger) LoggerFactory.getLogger(ChargingEventConsumer.class);
         ListAppender<ILoggingEvent> appender = new ListAppender<>();

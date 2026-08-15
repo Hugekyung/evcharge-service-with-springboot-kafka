@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -43,6 +44,7 @@ class ChargingSessionControllerTest {
     }
 
     @Test
+    @DisplayName("Session이 존재하면 Session 응답을 반환한다")
     void returnsSessionResponseWhenSessionExists() throws Exception {
         service.session = ChargingSession.start(
                 "session-1",
@@ -62,6 +64,7 @@ class ChargingSessionControllerTest {
     }
 
     @Test
+    @DisplayName("Session이 없으면 404 Not Found를 반환한다")
     void returnsNotFoundWhenSessionDoesNotExist() throws Exception {
         service.notFound = true;
 
@@ -70,6 +73,7 @@ class ChargingSessionControllerTest {
     }
 
     @Test
+    @DisplayName("존재하는 Session의 이벤트 이력을 페이지 형태로 반환한다")
     void returnsEventHistoryForExistingSession() throws Exception {
         service.session = ChargingSession.start(
                 "session-1", "charger-1", 1, 55, new BigDecimal("12.500"),
@@ -95,6 +99,7 @@ class ChargingSessionControllerTest {
     }
 
     @Test
+    @DisplayName("페이지 크기가 최대값을 초과하면 400을 반환한다")
     void rejectsPageSizeAboveMaximum() throws Exception {
         mockMvc.perform(get("/api/v1/charging-sessions/session-1/events").param("size", "101"))
                 .andExpect(status().isBadRequest());

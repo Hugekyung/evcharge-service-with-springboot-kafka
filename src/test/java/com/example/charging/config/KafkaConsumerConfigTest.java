@@ -7,6 +7,7 @@ import com.example.charging.application.ChargingEventBusinessException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.listener.ConsumerRecordRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
@@ -17,6 +18,7 @@ import org.springframework.dao.TransientDataAccessException;
 class KafkaConsumerConfigTest {
 
     @Test
+    @DisplayName("일시적 오류는 두 번 재시도한 뒤 DLT로 복구한다")
     void retriesTransientFailureTwiceThenRecoversToDlt() {
         AtomicInteger recoveries = new AtomicInteger();
         DefaultErrorHandler handler = newHandler(recoveries);
@@ -32,6 +34,7 @@ class KafkaConsumerConfigTest {
     }
 
     @Test
+    @DisplayName("비즈니스 오류는 재시도하지 않고 즉시 DLT로 복구한다")
     void recoversBusinessFailureWithoutRetry() {
         AtomicInteger recoveries = new AtomicInteger();
         DefaultErrorHandler handler = newHandler(recoveries);
@@ -48,6 +51,7 @@ class KafkaConsumerConfigTest {
     }
 
     @Test
+    @DisplayName("예상하지 못한 RuntimeException은 재시도하지 않고 복구한다")
     void recoversUnexpectedRuntimeFailureWithoutRetry() {
         AtomicInteger recoveries = new AtomicInteger();
         DefaultErrorHandler handler = newHandler(recoveries);
@@ -61,6 +65,7 @@ class KafkaConsumerConfigTest {
     }
 
     @Test
+    @DisplayName("DLT Handler 오류는 다시 재시도하지 않는다")
     void doesNotRetryDltHandlerFailure() {
         AtomicInteger recoveries = new AtomicInteger();
         ConsumerRecordRecoverer recoverer = (record, exception) -> recoveries.incrementAndGet();

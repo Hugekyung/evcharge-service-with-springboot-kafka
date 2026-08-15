@@ -6,11 +6,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.example.charging.domain.ChargingEventType;
 import java.math.BigDecimal;
 import java.time.Instant;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ChargingEventPublisherContractTest {
 
     @Test
+    @DisplayName("브로커가 승인하면 이벤트 발행이 정상 종료된다")
     void publishReturnsNormallyWhenBrokerAcknowledges() {
         // Given
         ChargingEventPublisher publisher = command -> { };
@@ -21,6 +23,7 @@ class ChargingEventPublisherContractTest {
     }
 
     @Test
+    @DisplayName("브로커 발행 실패를 발행 예외로 전달한다")
     void publishSignalsBrokerFailureWithPublishingException() {
         // Given
         ChargingEventPublisher publisher = command -> {

@@ -21,6 +21,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -49,6 +50,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("CHARGING_STARTED 이벤트로 Session을 생성하고 이벤트 이력을 저장한다")
     void createsSessionAndStoresStartedEvent() {
         ChargingEventMessage message = message("evt-1", ChargingEventType.CHARGING_STARTED, 1);
         when(eventRepository.existsByEventId("evt-1")).thenReturn(false);
@@ -67,6 +69,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("CHARGING_PROGRESS 이벤트로 충전 중 Session 정보를 갱신한다")
     void appliesProgressToChargingSession() {
         ChargingSession session = ChargingSession.start(
                 "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
@@ -82,6 +85,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("CHARGING_COMPLETED 이벤트로 Session을 완료 상태로 전환한다")
     void completesChargingSession() {
         ChargingSession session = ChargingSession.start(
                 "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
@@ -97,6 +101,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("CHARGING_FAILED 이벤트로 Session을 실패 상태로 전환한다")
     void failsChargingSession() {
         ChargingSession session = ChargingSession.start(
                 "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
@@ -112,6 +117,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("STARTED, PROGRESS, COMPLETED 이벤트를 순서대로 처리한다")
     void processesStartedProgressAndCompletedInOrder() {
         AtomicReference<ChargingSession> createdSession = new AtomicReference<>();
         when(eventRepository.existsByEventId(any())).thenReturn(false);
@@ -132,6 +138,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("동일한 eventId는 한 번만 처리한다")
     void processesTheSameEventIdOnlyOnce() {
         ChargingEventMessage message = message("evt-1", ChargingEventType.CHARGING_STARTED, 1);
         when(eventRepository.existsByEventId("evt-1")).thenReturn(false, true);
@@ -148,6 +155,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("새로운 오래된 이벤트는 Session 상태를 변경하지 않고 이력만 저장한다")
     void storesOlderNewEventWithoutChangingSessionSequence() {
         ChargingSession session = ChargingSession.start(
                 "session-1", "charger-1", 3, 40, BigDecimal.ONE, OCCURRED_AT, PROCESSED_AT);
@@ -163,6 +171,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("순서가 뒤바뀐 이벤트에서도 가장 높은 sequence를 유지한다")
     void keepsHighestSequenceWhenEventsArriveOutOfOrder() {
         ChargingSession session = ChargingSession.start(
                 "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
@@ -180,6 +189,7 @@ class ChargingSessionServiceImplTest {
     }
 
     @Test
+    @DisplayName("Session이 없을 때 STARTED가 아닌 이벤트를 거부한다")
     void rejectsNonStartedEventWhenSessionDoesNotExist() {
         when(eventRepository.existsByEventId("evt-3")).thenReturn(false);
         when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.empty());

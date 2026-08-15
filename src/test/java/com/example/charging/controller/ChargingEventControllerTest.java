@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -52,6 +53,7 @@ class ChargingEventControllerTest {
     }
 
     @Test
+    @DisplayName("브로커 승인 시 이벤트 API가 202 Accepted를 반환한다")
     void postReturnsAcceptedWhenPublisherAcknowledges() throws Exception {
         // Given
         publisher.acknowledge();
@@ -69,6 +71,7 @@ class ChargingEventControllerTest {
     }
 
     @Test
+    @DisplayName("브로커 발행 실패 시 이벤트 API가 5xx를 반환한다")
     void postReturns5xxWhenPublisherFails() throws Exception {
         // Given
         publisher.fail();
@@ -84,6 +87,7 @@ class ChargingEventControllerTest {
     }
 
     @ParameterizedTest
+    @DisplayName("필수 입력값이 유효하지 않으면 발행하지 않고 400을 반환한다")
     @MethodSource("invalidBoundaryRequests")
     void postReturnsBadRequestWithoutPublishingWhenRequiredFieldIsInvalid(String invalidRequest) throws Exception {
         // Given
@@ -111,6 +115,7 @@ class ChargingEventControllerTest {
     }
 
     @Test
+    @DisplayName("알 수 없는 이벤트 타입이면 발행하지 않고 400을 반환한다")
     void postReturnsBadRequestWithoutPublishingWhenEventTypeIsUnknown() throws Exception {
         // Given
         String invalidRequest = VALID_REQUEST.replace("CHARGING_STARTED", "UNKNOWN");
@@ -126,6 +131,7 @@ class ChargingEventControllerTest {
     }
 
     @Test
+    @DisplayName("시간대 오프셋이 없는 timestamp면 발행하지 않고 400을 반환한다")
     void postReturnsBadRequestWithoutPublishingWhenTimestampHasNoOffset() throws Exception {
         // Given
         String invalidRequest = VALID_REQUEST.replace("2026-08-12T12:00:00+09:00", "2026-08-12T12:00:00");
@@ -141,6 +147,7 @@ class ChargingEventControllerTest {
     }
 
     @ParameterizedTest
+    @DisplayName("식별자에 제어 문자가 포함되면 발행하지 않고 400을 반환한다")
     @MethodSource("controlCharacterRequests")
     void postReturnsBadRequestWithoutPublishingWhenIdentifierContainsControlCharacter(String invalidRequest)
             throws Exception {
@@ -160,6 +167,7 @@ class ChargingEventControllerTest {
     }
 
     @Test
+    @DisplayName("JSON 형식이 잘못되면 발행하지 않고 400을 반환한다")
     void postReturnsBadRequestWithoutPublishingWhenJsonIsMalformed() throws Exception {
         // Given
         String invalidRequest = "{\"eventId\":";
