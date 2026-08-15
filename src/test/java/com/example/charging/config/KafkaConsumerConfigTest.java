@@ -60,6 +60,22 @@ class KafkaConsumerConfigTest {
         assertThat(recoveries).hasValue(1);
     }
 
+    @Test
+    void doesNotRetryDltHandlerFailure() {
+        AtomicInteger recoveries = new AtomicInteger();
+        ConsumerRecordRecoverer recoverer = (record, exception) -> recoveries.incrementAndGet();
+        DefaultErrorHandler handler = KafkaConsumerConfig.createDltErrorHandler(recoverer);
+        ConsumerRecord<String, String> record = new ConsumerRecord<>(
+                "charging-events-dlt", 0, 0L, "session-001", "event");
+
+        assertThat(handler.handleOne(
+                new IllegalStateException("dlt handler failed"),
+                record,
+                mock(Consumer.class),
+                mock(MessageListenerContainer.class))).isTrue();
+        assertThat(recoveries).hasValue(1);
+    }
+
     private static DefaultErrorHandler newHandler(AtomicInteger recoveries) {
         BackOffHandler noWait = new BackOffHandler() { };
         ConsumerRecordRecoverer recoverer = (record, exception) -> recoveries.incrementAndGet();

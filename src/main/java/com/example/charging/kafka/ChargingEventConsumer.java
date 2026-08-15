@@ -22,8 +22,15 @@ public class ChargingEventConsumer {
         chargingSessionService.process(message);
     }
 
-    @KafkaListener(topics = "charging-events-dlt", groupId = "evcharging-dlt")
+    @KafkaListener(
+            topics = "charging-events-dlt",
+            groupId = "evcharging-dlt",
+            containerFactory = "dltKafkaListenerContainerFactory")
     public void handleDlt(ChargingEventMessage message) {
+        if (message == null) {
+            log.error("Charging event moved to DLT with an unreadable payload");
+            return;
+        }
         log.error(
                 "Charging event moved to DLT: eventId={}, sessionId={}, chargerId={}, eventType={}, sequence={}",
                 message.eventId(),
