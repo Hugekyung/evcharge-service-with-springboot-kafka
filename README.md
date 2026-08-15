@@ -35,6 +35,7 @@ HTTP 요청은 DB를 직접 변경하지 않습니다. 요청 형식을 검증�
 
 - Java 21
 - Spring Boot 3.5
+- Spring Boot Actuator
 - Spring Web MVC, Validation
 - Spring Data JPA
 - Spring Kafka
@@ -72,6 +73,14 @@ docker compose up -d
 PostgreSQL은 `localhost:5432`, Kafka는 `localhost:9092`에서 실행됩니다. Flyway가 `V1__create_charging_tables.sql`을 적용하고, `KafkaTopicInitializer`가 Kafka Broker 연결과 Topic 생성을 확인한 뒤 Listener를 시작합니다.
 
 Kafka 초기화는 최초 시도를 포함해 최대 5회 수행합니다. 1초부터 지연 시간이 2배씩 증가하며, 연결 timeout이나 Broker의 일시적 오류만 재시도합니다. 인증·권한·설정 오류 같은 영구 오류는 즉시 시작 실패로 처리합니다.
+
+Actuator Health Check는 다음 주소에서 확인할 수 있습니다.
+
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+Health 응답에는 애플리케이션, PostgreSQL, Kafka 연결 상태가 포함됩니다. 로컬 PoC 편의를 위해 `health`, `info` endpoint만 외부에 노출합니다.
 
 종료할 때는 다음을 사용합니다.
 
@@ -341,6 +350,10 @@ Kafka의 중복 전달을 전제로 `eventId` 존재 여부를 먼저 확인하�
 
 Mock만으로는 Kafka Broker, Flyway, PostgreSQL, Listener 연결 문제를 확인할 수 없습니다. 따라서 Service 단위 테스트를 먼저 작성하고, 최종적으로 실제 PostgreSQL과 Kafka를 띄우는 Testcontainers 통합 테스트 한 개로 핵심 흐름을 검증합니다. Docker가 없을 때 테스트를 조용히 Skip하지 않도록 했습니다.
 
+### ADR-009. 운영성 개선은 Actuator Health Check만 적용한다
+
+이 프로젝트는 작은 PoC이므로 Metrics 서버, Structured Logging 파이프라인, 커스텀 Consumer 상태 API까지 확장하지 않습니다. 대신 Actuator의 `health`, `info` endpoint만 노출해 애플리케이션·PostgreSQL·Kafka의 기본 연결 상태를 확인할 수 있게 했습니다. 나머지 운영·개발환경 확장은 현재 범위에서 제외합니다.
+
 ## 범위에서 제외한 기능
 
 - 인증·인가
@@ -358,4 +371,5 @@ Mock만으로는 Kafka Broker, Flyway, PostgreSQL, Listener 연결 문제를 확
 - 멱등성 및 Event Ordering
 - Kafka Retry / DLT
 - Service 단위 테스트와 Testcontainers 통합 테스트
+- Actuator Health Check
 - `./gradlew test` 통과
