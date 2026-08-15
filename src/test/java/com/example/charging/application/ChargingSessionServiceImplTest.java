@@ -149,9 +149,13 @@ class ChargingSessionServiceImplTest {
         service.process(message);
         service.process(message);
 
-        verify(sessionRepository).findBySessionId("session-1");
-        verify(sessionRepository).save(any(ChargingSession.class));
-        verify(eventRepository).save(any());
+        org.mockito.ArgumentCaptor<ChargingSession> captor =
+                org.mockito.ArgumentCaptor.forClass(ChargingSession.class);
+        verify(sessionRepository, times(1)).findBySessionId("session-1");
+        verify(sessionRepository, times(1)).save(captor.capture());
+        verify(eventRepository, times(1)).save(any());
+        assertThat(captor.getValue().getStatus()).isEqualTo(ChargingSessionStatus.CHARGING);
+        assertThat(captor.getValue().getLastSequence()).isEqualTo(1);
     }
 
     @Test
