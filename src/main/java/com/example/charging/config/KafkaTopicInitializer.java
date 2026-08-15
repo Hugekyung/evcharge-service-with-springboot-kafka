@@ -5,6 +5,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.apache.kafka.common.errors.RetriableException;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.KafkaAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +18,24 @@ public class KafkaTopicInitializer implements ApplicationRunner {
     private final KafkaListenerEndpointRegistry listenerRegistry;
     private final RetryTemplate retryTemplate;
 
+    @Autowired
     public KafkaTopicInitializer(
             KafkaAdmin kafkaAdmin,
             KafkaListenerEndpointRegistry listenerRegistry) {
+        this(kafkaAdmin, listenerRegistry, defaultRetryTemplate());
+    }
+
+    KafkaTopicInitializer(
+            KafkaAdmin kafkaAdmin,
+            KafkaListenerEndpointRegistry listenerRegistry,
+            RetryTemplate retryTemplate) {
         this.kafkaAdmin = kafkaAdmin;
         this.listenerRegistry = listenerRegistry;
-        this.retryTemplate = RetryTemplate.builder()
+        this.retryTemplate = retryTemplate;
+    }
+
+    private static RetryTemplate defaultRetryTemplate() {
+        return RetryTemplate.builder()
                 .maxAttempts(5)
                 .exponentialBackoff(1_000, 2.0, 16_000)
                 .retryOn(KafkaTransientException.class)

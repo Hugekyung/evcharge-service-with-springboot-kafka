@@ -223,6 +223,44 @@ class ChargingSessionServiceImplTest {
                 .isInstanceOf(ChargingEventBusinessException.class);
     }
 
+    @Test
+    @DisplayName("종료 상태의 Session은 후속 상태 변경 이벤트를 거부한다")
+    void rejectsEventForTerminalSession() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
+        session.complete(2, 50, new BigDecimal("2.00"), OCCURRED_AT, PROCESSED_AT);
+        when(eventRepository.existsByEventId("evt-3")).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        assertThatThrownBy(() -> service.process(message("evt-3", ChargingEventType.CHARGING_PROGRESS, 3)))
+                .isInstanceOf(ChargingEventBusinessException.class);
+        verify(sessionRepository, never()).save(any());
+        verify(eventRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("이벤트의 chargerId가 Session과 다르면 비즈니스 예외를 발생시킨다")
+    void rejectsEventFromDifferentCharger() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
+        ChargingEventMessage message = new ChargingEventMessage(
+                "evt-2",
+                "charger-2",
+                "session-1",
+                ChargingEventType.CHARGING_PROGRESS,
+                2,
+                40,
+                BigDecimal.ONE,
+                OCCURRED_AT);
+        when(eventRepository.existsByEventId("evt-2")).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        assertThatThrownBy(() -> service.process(message))
+                .isInstanceOf(ChargingEventBusinessException.class);
+        verify(sessionRepository, never()).save(any());
+        verify(eventRepository, never()).save(any());
+    }
+
     private ChargingEventMessage message(String eventId, ChargingEventType eventType, long sequence) {
         return message(eventId, eventType, sequence, 40, BigDecimal.ONE);
     }
