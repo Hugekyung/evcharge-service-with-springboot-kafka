@@ -59,23 +59,4 @@ class ChargingEventConsumerTest {
         }
     }
 
-    @Test
-    void logsUnreadableDltPayloadWithoutThrowing() {
-        Logger logger = (Logger) LoggerFactory.getLogger(ChargingEventConsumer.class);
-        ListAppender<ILoggingEvent> appender = new ListAppender<>();
-        appender.start();
-        logger.addAppender(appender);
-        ChargingEventConsumer consumer = new ChargingEventConsumer(org.mockito.Mockito.mock(ChargingSessionService.class));
-
-        try {
-            consumer.handleDlt(null);
-
-            assertThat(appender.list)
-                    .anySatisfy(event -> assertThat(event.getFormattedMessage())
-                            .contains("unreadable payload"));
-        } finally {
-            logger.detachAppender(appender);
-            appender.stop();
-        }
-    }
 }

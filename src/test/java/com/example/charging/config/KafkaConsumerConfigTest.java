@@ -79,7 +79,7 @@ class KafkaConsumerConfigTest {
     private static DefaultErrorHandler newHandler(AtomicInteger recoveries) {
         BackOffHandler noWait = new BackOffHandler() { };
         ConsumerRecordRecoverer recoverer = (record, exception) -> recoveries.incrementAndGet();
-        return KafkaConsumerConfig.createErrorHandler(recoverer, noWait);
+        return KafkaConsumerConfig.createBlockingRetryErrorHandlerWithBackOffHandler(recoverer, noWait);
     }
 
     private static ConsumerRecord<String, String> record() {

@@ -31,7 +31,7 @@ public class KafkaConsumerConfig {
                 kafkaOperations,
                 (record, exception) -> new TopicPartition(record.topic() + "-dlt", record.partition()));
 
-        return createErrorHandler(recoverer);
+        return createBlockingRetryErrorHandler(recoverer);
     }
 
     @Bean
@@ -40,6 +40,7 @@ public class KafkaConsumerConfig {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, ChargingEventMessage>();
         factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(3);
+        factory.setAutoStartup(false);
         factory.setCommonErrorHandler(createDltErrorHandler((record, exception) ->
                 log.error(
                         "DLT handling failed without retry: topic={}, partition={}, offset={}",
@@ -50,11 +51,11 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    static DefaultErrorHandler createErrorHandler(ConsumerRecordRecoverer recoverer) {
-        return createErrorHandler(recoverer, null);
+    static DefaultErrorHandler createBlockingRetryErrorHandler(ConsumerRecordRecoverer recoverer) {
+        return createBlockingRetryErrorHandlerWithBackOffHandler(recoverer, null);
     }
 
-    static DefaultErrorHandler createErrorHandler(
+    static DefaultErrorHandler createBlockingRetryErrorHandlerWithBackOffHandler(
             ConsumerRecordRecoverer recoverer,
             BackOffHandler backOffHandler) {
         ExponentialBackOffWithMaxRetries backOff = new ExponentialBackOffWithMaxRetries(2);
