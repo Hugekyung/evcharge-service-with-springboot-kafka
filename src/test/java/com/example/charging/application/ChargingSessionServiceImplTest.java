@@ -183,13 +183,34 @@ class ChargingSessionServiceImplTest {
         when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
 
         service.process(message("evt-1", ChargingEventType.CHARGING_STARTED, 1));
-        service.process(message("evt-3", ChargingEventType.CHARGING_PROGRESS, 3));
-        service.process(message("evt-2", ChargingEventType.CHARGING_PROGRESS, 2));
+        service.process(message(
+                "evt-3", ChargingEventType.CHARGING_PROGRESS, 3, 55, new BigDecimal("3.00")));
+        service.process(message(
+                "evt-2", ChargingEventType.CHARGING_PROGRESS, 2, 45, new BigDecimal("2.00")));
 
         assertThat(session.getLastSequence()).isEqualTo(3);
-        assertThat(session.getBatteryLevel()).isEqualTo(40);
+        assertThat(session.getBatteryLevel()).isEqualTo(55);
+        assertThat(session.getChargedKwh()).isEqualByComparingTo("3.00");
         verify(sessionRepository, times(1)).save(session);
         verify(eventRepository, times(3)).save(any());
+    }
+
+    @Test
+    @DisplayName("현재 lastSequence와 같은 sequence는 Session을 변경하지 않고 이력만 저장한다")
+    void doesNotApplyStateChangeWhenSequenceEqualsLastSequence() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 3, 55, new BigDecimal("3.00"), OCCURRED_AT, PROCESSED_AT);
+        when(eventRepository.existsByEventId("evt-3")).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        service.process(message(
+                "evt-3", ChargingEventType.CHARGING_PROGRESS, 3, 45, new BigDecimal("2.00")));
+
+        assertThat(session.getLastSequence()).isEqualTo(3);
+        assertThat(session.getBatteryLevel()).isEqualTo(55);
+        assertThat(session.getChargedKwh()).isEqualByComparingTo("3.00");
+        verify(sessionRepository, never()).save(any());
+        verify(eventRepository, times(1)).save(any());
     }
 
     @Test
@@ -203,14 +224,23 @@ class ChargingSessionServiceImplTest {
     }
 
     private ChargingEventMessage message(String eventId, ChargingEventType eventType, long sequence) {
+        return message(eventId, eventType, sequence, 40, BigDecimal.ONE);
+    }
+
+    private ChargingEventMessage message(
+            String eventId,
+            ChargingEventType eventType,
+            long sequence,
+            int batteryLevel,
+            BigDecimal chargedKwh) {
         return new ChargingEventMessage(
                 eventId,
                 "charger-1",
                 "session-1",
                 eventType,
                 sequence,
-                40,
-                BigDecimal.ONE,
+                batteryLevel,
+                chargedKwh,
                 OCCURRED_AT);
     }
 }

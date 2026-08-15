@@ -332,7 +332,7 @@ Session State Update = 1
 
 ⸻
 
-### 18. Event Ordering 테스트
+### 18. Event Ordering 테스트 [완료]
 
 Scenario:
 
