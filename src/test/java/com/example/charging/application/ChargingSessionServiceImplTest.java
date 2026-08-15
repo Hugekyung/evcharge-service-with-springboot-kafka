@@ -19,6 +19,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,8 +58,77 @@ class ChargingSessionServiceImplTest {
 
         service.process(message);
 
-        verify(sessionRepository).save(any(ChargingSession.class));
+        org.mockito.ArgumentCaptor<ChargingSession> captor =
+                org.mockito.ArgumentCaptor.forClass(ChargingSession.class);
+        verify(sessionRepository).save(captor.capture());
+        assertThat(captor.getValue().getStatus()).isEqualTo(ChargingSessionStatus.CHARGING);
+        assertThat(captor.getValue().getLastSequence()).isEqualTo(1);
         verify(eventRepository).save(any());
+    }
+
+    @Test
+    void appliesProgressToChargingSession() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
+        when(eventRepository.existsByEventId("evt-2")).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        service.process(message("evt-2", ChargingEventType.CHARGING_PROGRESS, 2));
+
+        assertThat(session.getStatus()).isEqualTo(ChargingSessionStatus.CHARGING);
+        assertThat(session.getLastSequence()).isEqualTo(2);
+        assertThat(session.getBatteryLevel()).isEqualTo(40);
+        verify(sessionRepository).save(session);
+    }
+
+    @Test
+    void completesChargingSession() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
+        when(eventRepository.existsByEventId("evt-3")).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        service.process(message("evt-3", ChargingEventType.CHARGING_COMPLETED, 3));
+
+        assertThat(session.getStatus()).isEqualTo(ChargingSessionStatus.COMPLETED);
+        assertThat(session.getLastSequence()).isEqualTo(3);
+        assertThat(session.getCompletedAt()).isEqualTo(OCCURRED_AT);
+        verify(sessionRepository).save(session);
+    }
+
+    @Test
+    void failsChargingSession() {
+        ChargingSession session = ChargingSession.start(
+                "session-1", "charger-1", 1, 35, BigDecimal.ZERO, OCCURRED_AT, PROCESSED_AT);
+        when(eventRepository.existsByEventId("evt-4")).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1")).thenReturn(Optional.of(session));
+
+        service.process(message("evt-4", ChargingEventType.CHARGING_FAILED, 4));
+
+        assertThat(session.getStatus()).isEqualTo(ChargingSessionStatus.FAILED);
+        assertThat(session.getLastSequence()).isEqualTo(4);
+        assertThat(session.getCompletedAt()).isEqualTo(OCCURRED_AT);
+        verify(sessionRepository).save(session);
+    }
+
+    @Test
+    void processesStartedProgressAndCompletedInOrder() {
+        AtomicReference<ChargingSession> createdSession = new AtomicReference<>();
+        when(eventRepository.existsByEventId(any())).thenReturn(false);
+        when(sessionRepository.findBySessionId("session-1"))
+                .thenAnswer(invocation -> Optional.ofNullable(createdSession.get()));
+        when(sessionRepository.save(any(ChargingSession.class))).thenAnswer(invocation -> {
+            ChargingSession session = invocation.getArgument(0);
+            createdSession.set(session);
+            return session;
+        });
+
+        service.process(message("evt-1", ChargingEventType.CHARGING_STARTED, 1));
+        service.process(message("evt-2", ChargingEventType.CHARGING_PROGRESS, 2));
+        service.process(message("evt-3", ChargingEventType.CHARGING_COMPLETED, 3));
+
+        assertThat(createdSession.get().getStatus()).isEqualTo(ChargingSessionStatus.COMPLETED);
+        assertThat(createdSession.get().getLastSequence()).isEqualTo(3);
     }
 
     @Test

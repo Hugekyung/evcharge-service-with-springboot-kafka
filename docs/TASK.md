@@ -304,7 +304,7 @@ Consumer Failure
 
 ## P1 - Tests
 
-### 16. 상태 전이 테스트
+### 16. 상태 전이 테스트 [완료]
 
 - CHARGING_STARTED 테스트
 - CHARGING_PROGRESS 테스트
