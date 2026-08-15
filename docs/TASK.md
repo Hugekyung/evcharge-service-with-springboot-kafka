@@ -364,7 +364,7 @@ sequence=2 상태 변경 없음
 
 ## P1 - Documentation
 
-### 20. README 작성
+### 20. README 작성 [완료]
 
 - 프로젝트 목적
 - Architecture Diagram
