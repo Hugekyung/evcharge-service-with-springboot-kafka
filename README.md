@@ -1,6 +1,6 @@
 # EV Charging Event Platform
 
-Spring Boot와 Kafka를 이용해 전기차 충전 이벤트를 비동기로 처리하는 작은 PoC 프로젝트입니다.
+Node.js 실무에서 경험했던 이벤트 기반 처리를 Java/Spring/Kafka 환경에서 다시 설계하면서 메시지 순서·중복·실패·멱등성을 비교 검증하기 위한 전기차 충전 비동기 처리 PoC 프로젝트입니다.
 
 HTTP로 받은 충전 이벤트를 Kafka에 발행하고, Consumer가 이벤트를 읽어 Session 상태와 이벤트 이력을 PostgreSQL에 저장합니다. 중복 전달, 순서 역전, 일시적 장애와 실패 이벤트 처리까지 포함해 이벤트 기반 백엔드의 핵심 흐름을 연습하는 것이 목적입니다.
 
